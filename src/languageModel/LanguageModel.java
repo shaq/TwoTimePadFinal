@@ -26,13 +26,13 @@ public class LanguageModel {
 
         // Creating a new HashMap to store the n-grams with their MLEs.
         HashMap<String, Double> languageModel = new HashMap<String, Double>();
-        Double probEstimate = 0.0;
+        Double mle = 0.0;
 
         while (it.hasNext()) {
             Entry<String, Integer> entry = it.next();
             String ngram = entry.getKey().toString();
-            probEstimate = model.laplaceSmoothing(ngrams, ngram, corpus);
-            languageModel.put(ngram, probEstimate);
+            mle = model.estimateProbability(ngrams, ngram, corpus);
+            languageModel.put(ngram, mle);
         }
 
         return languageModel;

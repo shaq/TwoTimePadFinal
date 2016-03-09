@@ -1,7 +1,11 @@
 package beamSearch;
 
+import languageModel.LanguageModel;
+import languageModel.NGram;
 import languageModel.NGramModel;
+import languageModel.ParseCorpus;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -14,33 +18,11 @@ import java.util.*;
  **/
 public class BeamSearch {
 
-
-    /**
-     * Creating an array to hold the ascii codes of all printable english characters.
-    **/
-    private static final int [] printableAscii = new int[96];
-    private static final int ASCII_LENGTH = printableAscii.length;
-
+    private static final int ASCII_LENGTH = 256;
+    private static ParseCorpus parse = new ParseCorpus();
+    private static LanguageModel lm = new LanguageModel();
     private static NGramModel model = new NGramModel();
-
-
-    /**
-     * A constructor that initialises the array that holds the ascii codes for the printable english ascii characters.
-     **/
-    public BeamSearch(){
-
-        printableAscii[0] = 13;
-        int asciiChar = 32;
-        for(int i = 1; i < printableAscii.length; i++){
-            printableAscii[i] = asciiChar;
-            asciiChar++;
-        }
-
-    }
-
-    public int[] getPrintableAscii(){
-        return printableAscii;
-    }
+    private static NGram ngram = new NGram();
 
     /**
      * A method that encodes a string into an Ascii code represented as a byte array.
@@ -83,7 +65,7 @@ public class BeamSearch {
      * @param n : the chose length of the ciphertext by the user.
      * @return ciphertext : the XOR of two random ciphertexts of length n.
      **/
-    public byte[] getCipherText(int n, String corpus) {
+    public static byte[] getCipherText(int n, String corpus) {
 
         Random rand = new Random();
         int[] randomIndices = new int[2];
@@ -127,14 +109,14 @@ public class BeamSearch {
      * @param ciphertext    : The XOR of two ciphertexts, of which we are trying to recover the plaintexts.
      * @return candidates : The list of top candidate ciphertexts returned as a result of the algorithm.
      **/
-    public static ArrayList<Tuple> beamSearch(String corpus, HashMap<String, Integer> ngramModel, HashMap<String,
-                                                Double> languageModel, int n, int pruneNumber, byte[] ciphertext) {
+    public static ArrayList<Tuple> beamSearch(String corpus, HashMap<String, Integer> ngramModel, HashMap<String, Double> languageModel, int n, int pruneNumber, byte[] ciphertext) {
 
         /**
          Adding the log probability of the empty string to the language model.
          This is 100% since every string starts from the empty string.
          **/
-        languageModel.put("", Math.log(100));
+        languageModel.put("", Math.log(1.0));
+        HashMap<String, Integer> ngrams = ngramModel;
 
         // The two candidate strings to be used repeatedly in the algorithm.
         String plaintext_one = "";
@@ -172,14 +154,14 @@ public class BeamSearch {
                 // We then sort and keep the best 'pruneNumber' candidates before repeating.
                 for (int ascii = 0; ascii < ASCII_LENGTH; ascii++) {
 
-                    p_one_next = (char) printableAscii[ascii];
+                    p_one_next = (char) ascii;
 //					System.out.println("1 next: " + (char)ascii);
                     /**
                      By using our character in p_one_next and the character at 'position' in the ciphertext, we can
                      obtain the unique candidate for p_two_next, since p_one_next XOR p_two_next must equal the
                      character of the ciphertext at 'position'.
                      **/
-                    p_two_next = (char) (printableAscii[ascii] ^ ciphertext[position]);
+                    p_two_next = (char) (ascii ^ ciphertext[position]);
 
                     // Concatenating our two candidate plaintexts with the next character.
                     plaintext_one = (candidates.get(candNum)).getPlaintextOne() + p_one_next;
@@ -188,15 +170,15 @@ public class BeamSearch {
                     int p_length = (plaintext_one.length() + plaintext_two.length()) / 2;
                     Double p_one_prob = 0.0;
                     Double p_two_prob = 0.0;
-                    Double p_one_n_minus_prob = 0.0;
-                    Double p_two_n_minus_prob = 0.0;
+                    Double p_one_nminus_prob = 0.0;
+                    Double p_two_nminus_prob = 0.0;
                     String p_one_ngram = "";
                     String p_two_ngram = "";
                     String pOne_n_minus_one_gram = "";
                     String pTwo_n_minus_one_gram = "";
 
-                    // Logic used to control of the initialisation of the ngrams and (n-1)grams to be used in the
-                    // probability logic below.
+                    // Logic used to control of the initialisation of the ngrams and (n-1)grams to be used in the probability
+                    // logic below.
                     if (p_length > n) {
 
                         p_one_ngram = plaintext_one.substring(p_length - n, p_length);
@@ -224,31 +206,31 @@ public class BeamSearch {
                     // This logic also implements smoothing.
                     if (!languageModel.containsKey(p_one_ngram) && !languageModel.containsKey(p_two_ngram)) {
 
-                        p_one_prob = model.laplaceSmoothing(ngramModel, p_one_ngram, corpus);
-                        p_two_prob = model.laplaceSmoothing(ngramModel, p_two_ngram, corpus);
-                        p_one_n_minus_prob = model.laplaceSmoothing(ngramModel, pOne_n_minus_one_gram, corpus);
-                        p_two_n_minus_prob = model.laplaceSmoothing(ngramModel, pTwo_n_minus_one_gram, corpus);
+                        p_one_prob = model.laplaceSmoothing(ngrams, p_one_ngram, corpus);
+                        p_two_prob = model.laplaceSmoothing(ngrams, p_two_ngram, corpus);
+                        p_one_nminus_prob = model.laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus);
+                        p_two_nminus_prob = model.laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus);
                         System.out.println("both not in lm");
                     } else if (!languageModel.containsKey(p_one_ngram) && languageModel.containsKey(p_two_ngram)) {
 
-                        p_one_prob = model.laplaceSmoothing(ngramModel, p_one_ngram, corpus);
+                        p_one_prob = model.laplaceSmoothing(ngrams, p_one_ngram, corpus);
                         p_two_prob = languageModel.get(p_two_ngram);
-                        p_one_n_minus_prob = model.laplaceSmoothing(ngramModel, pOne_n_minus_one_gram, corpus);
-                        p_two_n_minus_prob = languageModel.get(pTwo_n_minus_one_gram);
+                        p_one_nminus_prob = model.laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus);
+                        p_two_nminus_prob = languageModel.get(pTwo_n_minus_one_gram);
                         System.out.println("p1 not in lm");
                     } else if (languageModel.containsKey(p_one_ngram) && !languageModel.containsKey(p_two_ngram)) {
 
                         p_one_prob = languageModel.get(p_one_ngram);
-                        p_two_prob = model.laplaceSmoothing(ngramModel, p_two_ngram, corpus);
-                        p_one_n_minus_prob = languageModel.get(pOne_n_minus_one_gram);
-                        p_two_n_minus_prob = model.laplaceSmoothing(ngramModel, pTwo_n_minus_one_gram, corpus);
+                        p_two_prob = model.laplaceSmoothing(ngrams, p_two_ngram, corpus);
+                        p_one_nminus_prob = languageModel.get(pOne_n_minus_one_gram);
+                        p_two_nminus_prob = model.laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus);
                         System.out.println("p2 not in lm");
                     } else {
 
                         p_one_prob = languageModel.get(p_one_ngram);
                         p_two_prob = languageModel.get(p_two_ngram);
-                        p_one_n_minus_prob = languageModel.get(pOne_n_minus_one_gram);
-                        p_two_n_minus_prob = languageModel.get(pTwo_n_minus_one_gram);
+                        p_one_nminus_prob = languageModel.get(pOne_n_minus_one_gram);
+                        p_two_nminus_prob = languageModel.get(pTwo_n_minus_one_gram);
                         System.out.println("both in lm");
                     }
 
@@ -256,23 +238,23 @@ public class BeamSearch {
                     // Rolling probability of candidate plaintexts are calculated here.
                     // log(Pr(P1 || c_i)) = log(Pr(P1)) + log(Pr(ngram)) - log(Pr((n-1)gram))
                     Tuple t = (candidates.get(candNum));
-//                    if (p_length == 1) {
-//                        cand_prob_one = p_one_prob;
-//                        cand_prob_two = p_two_prob;
-//
-//                    } else {
-                        cand_prob_one = t.getPercentageOne() + p_one_prob - p_one_n_minus_prob;
-                        cand_prob_two = t.getPercentageTwo() + p_two_prob - p_two_n_minus_prob;
-//                    }
-                    System.out.println("P1: " + plaintext_one);
-                    System.out.println("P1 prob = " + cand_prob_one);
+                    if (p_length == 1) {
+                        cand_prob_one = p_one_prob;
+                        cand_prob_two = p_two_prob;
+
+                    } else {
+                        cand_prob_one = t.getPercentageOne() + p_one_prob - p_one_nminus_prob;
+                        cand_prob_two = t.getPercentageTwo() + p_two_prob - p_two_nminus_prob;
+                    }
+                    System.out.println("1: " + plaintext_one);
+                    System.out.println("P1 = " + cand_prob_one);
 //					System.out.println("p1 prob " + p_one_prob);
 //					System.out.println("p2 prob " + p_two_prob);
-//					System.out.println("p1 n- prob " + p_one_n_minus_prob);
-//					System.out.println("p2 n- prob " + p_two_n_minus_prob);
+//					System.out.println("p1 n- prob " + p_one_nminus_prob);
+//					System.out.println("p2 n- prob " + p_two_nminus_prob);	
 
-                    System.out.println("P2: " + plaintext_two);
-                    System.out.println("P2 prob = " + cand_prob_two);
+                    System.out.println("2: " + plaintext_two);
+                    System.out.println("P2 = " + cand_prob_two);
 //					System.out.println();
                     temp.add(new Tuple(plaintext_one, plaintext_two, cand_prob_one, cand_prob_two));
 
@@ -302,5 +284,46 @@ public class BeamSearch {
         return candidates;
 
     }
+
+    /**
+     * A method that prints the given candidates in the desired format, along with their probabilities.
+     *
+     * @param candidates : The list of plaintext candidates to print.
+     */
+    public static void recoverPlaintexts(ArrayList<Tuple> candidates) {
+        for (Tuple candidate : candidates) {
+            System.out.println(candidate.toString());
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        String corpus = parse.processFiles();
+        int n = ngram.getN();
+        int pruneNumber = 100;
+        byte[] ciphertext = getCipherText(10, corpus);
+        HashMap<String, Integer> ngramModel = NGram.addNGrams(corpus, 1, n);
+        HashMap<String, Double> languageModel = lm.generateLanguageModel(corpus, n);
+
+        ArrayList<Tuple> candidates = beamSearch(corpus, ngramModel, languageModel, n, pruneNumber, ciphertext);
+//		
+//		for(Tuple t: candidates){
+//			
+//		}
+//		
+        recoverPlaintexts(candidates);
+//		System.out.println("actual ciphertext: " + decodeFromAscii(ciphertext));
+//		String ngram = "ä";
+//		Double smthEst = model.laplaceSmoothing(ngramModel, ngram, corpus);
+//		System.out.println(smthEst);
+//		System.out.println(ngramModel.get(ngram));
+//		System.out.println(corpus.length());
+//		System.out.print(ngramModel.size());
+//		Double pr = Math.log((1.0/(1235163.0 + 12081.0)));
+//		System.out.println("Pr of ngram = " + pr);
+//		System.out.println(languageModel);
+//		System.out.println(Runtime.getRuntime().availableProcessors());
+    }
+
 
 }

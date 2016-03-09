@@ -2,8 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7c0c1d5a-889b-434d-a827-c22fbc9abf72" name="Default" comment="Changed the createmodel method to use 'laplaceSmoothing' instead of calculating the probablity based off of MLE.">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/beamSearch/BeamSearch.java" afterPath="$PROJECT_DIR$/src/beamSearch/BeamSearch.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/languageModel/LanguageModel.java" afterPath="$PROJECT_DIR$/src/languageModel/LanguageModel.java" />
     </list>
     <ignored path="TwoTimePad.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,11 +38,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="BeamSearch.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="BeamSearch.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/beamSearch/BeamSearch.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.42657343">
-              <caret line="147" column="64" selection-start-line="147" selection-start-column="64" selection-end-line="147" selection-end-column="64" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="152" column="60" selection-start-line="152" selection-start-column="60" selection-end-line="152" selection-end-column="60" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#982#983#0" expanded="true" />
@@ -46,12 +54,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PlaintextRecovery.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="PlaintextRecovery.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
-              <folding />
+            <state vertical-scroll-proportion="0.37062937">
+              <caret line="37" column="76" selection-start-line="37" selection-start-column="76" selection-end-line="37" selection-end-column="76" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -124,8 +134,9 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="UPDATE_TYPE" value="MERGE" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GradleLocalSettings">
     <option name="externalProjectsViewState">
@@ -302,6 +313,145 @@
       <recent name="$PROJECT_DIR$/test/languageModelTests" />
       <recent name="$PROJECT_DIR$/test" />
     </key>
+  </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../.gitignore</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../TwoTimePad.iml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/beamSearch/BeamSearch$1.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/beamSearch/BeamSearch.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/beamSearch/PlaintextRecovery.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/beamSearch/Tuple.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/languageModel/LanguageModel.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/languageModel/NGram.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/languageModel/NGramModel.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/languageModel/ParseCorpus.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/languageModelTests/TestLanguageModel.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/languageModelTests/TestNGram.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/languageModelTests/TestNGramModel.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/languageModelTests/TestParseCorpus.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/mobydick.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePad/parse_test.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../out/production/TwoTimePadFinal/parse_test.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/beamSearch/BeamSearch.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/beamSearch/PlaintextRecovery.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/beamSearch/Tuple.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/languageModel/LanguageModel.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/languageModel/NGram.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/languageModel/NGramModel.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/languageModel/ParseCorpus.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/languageModelTests/TestLanguageModel.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/languageModelTests/TestNGram.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/languageModelTests/TestNGramModel.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/languageModelTests/TestParseCorpus.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/mobydick.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/../src/parse_test.txt</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
   </component>
   <component name="RunManager" selected="Application.PlaintextRecovery">
     <configuration default="false" name="BeamSearch" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -762,11 +912,11 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1916" height="1177" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32942238" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32942238" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -813,7 +963,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="4" />
+      <option name="time" value="5" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -982,14 +1132,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/languageModel/LanguageModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1000,14 +1142,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/beamSearch/BeamSearch.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.42657343">
-          <caret line="147" column="64" selection-start-line="147" selection-start-column="64" selection-end-line="147" selection-end-column="64" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="152" column="60" selection-start-line="152" selection-start-column="60" selection-end-line="152" selection-end-column="60" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#982#983#0" expanded="true" />
             <element signature="e#1019#1020#0" expanded="true" />
             <element signature="e#1289#1290#0" expanded="true" />
             <element signature="e#1352#1353#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.37062937">
+          <caret line="37" column="76" selection-start-line="37" selection-start-column="76" selection-end-line="37" selection-end-column="76" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
