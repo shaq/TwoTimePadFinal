@@ -5,7 +5,6 @@ import languageModel.NGram;
 import languageModel.NGramModel;
 import languageModel.ParseCorpus;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -19,10 +18,27 @@ import java.util.*;
 public class BeamSearch {
 
     private static final int ASCII_LENGTH = 256;
+
+    // Creating an array that will hold asci codes for all printable english ascii characters.
+    private static int[] printableAscii = new int[96];
     private static ParseCorpus parse = new ParseCorpus();
     private static LanguageModel lm = new LanguageModel();
     private static NGramModel model = new NGramModel();
     private static NGram ngram = new NGram();
+
+    /**
+     * A constructor that initialises the array to hold the ascii codes for all printable english ascii text.
+     */
+    public BeamSearch() {
+        // Setting first element to be carriage return.
+        printableAscii[0] = 13;
+        int ascii = 32;
+
+        for (int i = 1; i < printableAscii.length; i++) {
+            printableAscii[i] = ascii;
+            ascii++;
+        }
+    }
 
     /**
      * A method that encodes a string into an Ascii code represented as a byte array.
@@ -83,10 +99,17 @@ public class BeamSearch {
         byte[] c_two_arr = encodeStringToAscii(c_two);
         byte[] ciphertext = new byte[c_one.length()];
 
+        // Testing code that prints out the plaintexts and their byte codes.
         System.out.println(Arrays.toString(c_one_arr));
         System.out.println(c_one);
         System.out.println(Arrays.toString(c_two_arr));
         System.out.println(c_two);
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         int length = ciphertext.length;
         for (int i = 0; i < length; i++) {
@@ -115,7 +138,8 @@ public class BeamSearch {
          Adding the log probability of the empty string to the language model.
          This is 100% since every string starts from the empty string.
          **/
-        languageModel.put("", Math.log(1.0));
+        Double emptyStringProb = Math.log(100.0);
+        languageModel.put("", emptyStringProb);
         HashMap<String, Integer> ngrams = ngramModel;
 
         // The two candidate strings to be used repeatedly in the algorithm.
@@ -123,8 +147,16 @@ public class BeamSearch {
         String plaintext_two = "";
         char p_one_next;
         char p_two_next;
-        Double cand_prob_one;
-        Double cand_prob_two;
+        Double cand_prob_one = 0.0;
+        Double cand_prob_two = 0.0;
+        Double p_one_prob = 0.0;
+        Double p_two_prob = 0.0;
+        Double p_one_nminus_prob = 0.0;
+        Double p_two_nminus_prob = 0.0;
+        String p_one_ngram = "";
+        String p_two_ngram = "";
+        String pOne_n_minus_one_gram = "";
+        String pTwo_n_minus_one_gram = "";
 
         /**
          The ArrayList to hold all the candidates of plaintexts.
@@ -132,8 +164,8 @@ public class BeamSearch {
         ArrayList<Tuple> candidates = new ArrayList<Tuple>();
 
         // Setting all the candidates to initially have empty strings and 0 probability.
-        for (int ascii = 0; ascii < ASCII_LENGTH; ascii++) {
-            candidates.add(new Tuple("", "", 0.0, 0.0));
+        for (int ascii = 0; ascii < printableAscii.length; ascii++) {
+            candidates.add(new Tuple("", "", emptyStringProb, emptyStringProb));
         }
 
         // The main loop controlling the building of the candidates.
@@ -147,35 +179,28 @@ public class BeamSearch {
 
             for (int candNum = 0; candNum < candidates.size(); candNum++) {
 
-                cand_prob_one = 0.0;
-                cand_prob_two = 0.0;
+//                cand_prob_one = 0.0;
+//                cand_prob_two = 0.0;
 
                 // For every candidate in 'candidates' we extend by one 256 times. Once for each Ascii character.
                 // We then sort and keep the best 'pruneNumber' candidates before repeating.
-                for (int ascii = 0; ascii < ASCII_LENGTH; ascii++) {
+                for (int ascii = 0; ascii < printableAscii.length; ascii++) {
 
-                    p_one_next = (char) ascii;
+                    p_one_next = (char) printableAscii[ascii];
 //					System.out.println("1 next: " + (char)ascii);
                     /**
                      By using our character in p_one_next and the character at 'position' in the ciphertext, we can
                      obtain the unique candidate for p_two_next, since p_one_next XOR p_two_next must equal the
                      character of the ciphertext at 'position'.
                      **/
-                    p_two_next = (char) (ascii ^ ciphertext[position]);
+                    p_two_next = (char) (printableAscii[ascii] ^ ciphertext[position]);
 
                     // Concatenating our two candidate plaintexts with the next character.
                     plaintext_one = (candidates.get(candNum)).getPlaintextOne() + p_one_next;
                     plaintext_two = (candidates.get(candNum)).getPlaintextTwo() + p_two_next;
 
                     int p_length = (plaintext_one.length() + plaintext_two.length()) / 2;
-                    Double p_one_prob = 0.0;
-                    Double p_two_prob = 0.0;
-                    Double p_one_nminus_prob = 0.0;
-                    Double p_two_nminus_prob = 0.0;
-                    String p_one_ngram = "";
-                    String p_two_ngram = "";
-                    String pOne_n_minus_one_gram = "";
-                    String pTwo_n_minus_one_gram = "";
+
 
                     // Logic used to control of the initialisation of the ngrams and (n-1)grams to be used in the probability
                     // logic below.
@@ -238,20 +263,20 @@ public class BeamSearch {
                     // Rolling probability of candidate plaintexts are calculated here.
                     // log(Pr(P1 || c_i)) = log(Pr(P1)) + log(Pr(ngram)) - log(Pr((n-1)gram))
                     Tuple t = (candidates.get(candNum));
-                    if (p_length == 1) {
-                        cand_prob_one = p_one_prob;
-                        cand_prob_two = p_two_prob;
-
-                    } else {
+//                    if (p_length == 1) {
+//                        cand_prob_one = p_one_prob;
+//                        cand_prob_two = p_two_prob;
+//
+//                    } else {
                         cand_prob_one = t.getPercentageOne() + p_one_prob - p_one_nminus_prob;
                         cand_prob_two = t.getPercentageTwo() + p_two_prob - p_two_nminus_prob;
-                    }
+//                    }
                     System.out.println("1: " + plaintext_one);
                     System.out.println("P1 = " + cand_prob_one);
 //					System.out.println("p1 prob " + p_one_prob);
 //					System.out.println("p2 prob " + p_two_prob);
 //					System.out.println("p1 n- prob " + p_one_nminus_prob);
-//					System.out.println("p2 n- prob " + p_two_nminus_prob);	
+//					System.out.println("p2 n- prob " + p_two_nminus_prob);
 
                     System.out.println("2: " + plaintext_two);
                     System.out.println("P2 = " + cand_prob_two);
@@ -283,46 +308,6 @@ public class BeamSearch {
 
         return candidates;
 
-    }
-
-    /**
-     * A method that prints the given candidates in the desired format, along with their probabilities.
-     *
-     * @param candidates : The list of plaintext candidates to print.
-     */
-    public static void recoverPlaintexts(ArrayList<Tuple> candidates) {
-        for (Tuple candidate : candidates) {
-            System.out.println(candidate.toString());
-        }
-    }
-
-    public static void main(String[] args) throws IOException {
-
-        String corpus = parse.processFiles();
-        int n = ngram.getN();
-        int pruneNumber = 100;
-        byte[] ciphertext = getCipherText(10, corpus);
-        HashMap<String, Integer> ngramModel = NGram.addNGrams(corpus, 1, n);
-        HashMap<String, Double> languageModel = lm.generateLanguageModel(corpus, n);
-
-        ArrayList<Tuple> candidates = beamSearch(corpus, ngramModel, languageModel, n, pruneNumber, ciphertext);
-//		
-//		for(Tuple t: candidates){
-//			
-//		}
-//		
-        recoverPlaintexts(candidates);
-//		System.out.println("actual ciphertext: " + decodeFromAscii(ciphertext));
-//		String ngram = "ä";
-//		Double smthEst = model.laplaceSmoothing(ngramModel, ngram, corpus);
-//		System.out.println(smthEst);
-//		System.out.println(ngramModel.get(ngram));
-//		System.out.println(corpus.length());
-//		System.out.print(ngramModel.size());
-//		Double pr = Math.log((1.0/(1235163.0 + 12081.0)));
-//		System.out.println("Pr of ngram = " + pr);
-//		System.out.println(languageModel);
-//		System.out.println(Runtime.getRuntime().availableProcessors());
     }
 
 
