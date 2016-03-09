@@ -1,11 +1,7 @@
 package beamSearch;
 
-import languageModel.LanguageModel;
-import languageModel.NGram;
 import languageModel.NGramModel;
-import languageModel.ParseCorpus;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -138,7 +134,7 @@ public class BeamSearch {
          Adding the log probability of the empty string to the language model.
          This is 100% since every string starts from the empty string.
          **/
-        languageModel.put("", Math.log(1.0));
+        languageModel.put("", Math.log(100));
         HashMap<String, Integer> ngrams = ngramModel;
 
         // The two candidate strings to be used repeatedly in the algorithm.
