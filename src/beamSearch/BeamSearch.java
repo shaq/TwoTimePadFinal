@@ -256,14 +256,14 @@ public class BeamSearch {
                     // Rolling probability of candidate plaintexts are calculated here.
                     // log(Pr(P1 || c_i)) = log(Pr(P1)) + log(Pr(ngram)) - log(Pr((n-1)gram))
                     Tuple t = (candidates.get(candNum));
-                    if (p_length == 1) {
-                        cand_prob_one = p_one_prob;
-                        cand_prob_two = p_two_prob;
-
-                    } else {
+//                    if (p_length == 1) {
+//                        cand_prob_one = p_one_prob;
+//                        cand_prob_two = p_two_prob;
+//
+//                    } else {
                         cand_prob_one = t.getPercentageOne() + p_one_prob - p_one_n_minus_prob;
                         cand_prob_two = t.getPercentageTwo() + p_two_prob - p_two_n_minus_prob;
-                    }
+//                    }
                     System.out.println("P1: " + plaintext_one);
                     System.out.println("P1 prob = " + cand_prob_one);
 //					System.out.println("p1 prob " + p_one_prob);

@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7c0c1d5a-889b-434d-a827-c22fbc9abf72" name="Default" comment="Changed the probability of the empty string as that was wrong.">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/TwoTimePad/beamSearch/BeamSearch$1.class" afterPath="$PROJECT_DIR$/out/production/TwoTimePad/beamSearch/BeamSearch$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/TwoTimePad/beamSearch/BeamSearch.class" afterPath="$PROJECT_DIR$/out/production/TwoTimePad/beamSearch/BeamSearch.class" />
+    <list default="true" id="7c0c1d5a-889b-434d-a827-c22fbc9abf72" name="Default" comment="Changed the createmodel method to use 'laplaceSmoothing' instead of calculating the probablity based off of MLE.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/beamSearch/BeamSearch.java" afterPath="$PROJECT_DIR$/src/beamSearch/BeamSearch.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java" afterPath="$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/languageModel/LanguageModel.java" afterPath="$PROJECT_DIR$/src/languageModel/LanguageModel.java" />
     </list>
     <ignored path="TwoTimePad.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -34,11 +30,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="BeamSearch.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="BeamSearch.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/beamSearch/BeamSearch.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="230" column="61" selection-start-line="230" selection-start-column="61" selection-end-line="230" selection-end-column="61" />
+            <state vertical-scroll-proportion="0.42657343">
+              <caret line="147" column="64" selection-start-line="147" selection-start-column="64" selection-end-line="147" selection-end-column="64" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#982#983#0" expanded="true" />
@@ -54,19 +50,17 @@
         <entry file="file://$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="22" column="38" selection-start-line="22" selection-start-column="38" selection-end-line="22" selection-end-column="38" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LanguageModel.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="LanguageModel.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/languageModel/LanguageModel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.18072289">
-              <caret line="26" column="71" selection-start-line="26" selection-start-column="71" selection-end-line="26" selection-end-column="71" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="41" column="2" selection-start-line="41" selection-start-column="2" selection-end-line="41" selection-end-column="2" />
               <folding />
             </state>
           </provider>
@@ -149,8 +143,8 @@
         <option value="$PROJECT_DIR$/src/languageModel/NGramModel.java" />
         <option value="/Library/Java/JavaVirtualMachines/jdk1.7.0_75.jdk/Contents/Home/src.zip!/java/util/Comparator.java" />
         <option value="$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java" />
-        <option value="$PROJECT_DIR$/src/beamSearch/BeamSearch.java" />
         <option value="$PROJECT_DIR$/src/languageModel/LanguageModel.java" />
+        <option value="$PROJECT_DIR$/src/beamSearch/BeamSearch.java" />
       </list>
     </option>
   </component>
@@ -725,7 +719,13 @@
       <option name="project" value="LOCAL" />
       <updated>1457541728813</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Changed the createmodel method to use 'laplaceSmoothing' instead of calculating the probablity based off of MLE.">
+      <created>1457542053168</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1457542053168</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -766,12 +766,12 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942238" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32942238" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11642599" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22563177" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22563177" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22546972" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
@@ -806,7 +806,8 @@
     <MESSAGE value="Sharing the project from intellij using git as eclipse and svn no longer meets my needs." />
     <MESSAGE value="Added a main and moved over the 'recoverPlaintexts' method from BeamSearch to PlaintextRecovery." />
     <MESSAGE value="Changed the probability of the empty string as that was wrong." />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed the probability of the empty string as that was wrong." />
+    <MESSAGE value="Changed the createmodel method to use 'laplaceSmoothing' instead of calculating the probablity based off of MLE." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed the createmodel method to use 'laplaceSmoothing' instead of calculating the probablity based off of MLE." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -981,10 +982,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/beamSearch/BeamSearch.java">
+    <entry file="file://$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="230" column="61" selection-start-line="230" selection-start-column="61" selection-end-line="230" selection-end-column="61" />
+          <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/languageModel/LanguageModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="41" column="2" selection-start-line="41" selection-start-column="2" selection-end-line="41" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/beamSearch/BeamSearch.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.42657343">
+          <caret line="147" column="64" selection-start-line="147" selection-start-column="64" selection-end-line="147" selection-end-column="64" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#982#983#0" expanded="true" />
@@ -992,24 +1009,6 @@
             <element signature="e#1289#1290#0" expanded="true" />
             <element signature="e#1352#1353#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="38" selection-start-line="22" selection-start-column="38" selection-end-line="22" selection-end-column="38" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/languageModel/LanguageModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18072289">
-          <caret line="26" column="71" selection-start-line="26" selection-start-column="71" selection-end-line="26" selection-end-column="71" />
-          <folding />
         </state>
       </provider>
     </entry>
