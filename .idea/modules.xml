@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TwoTimePad.iml" filepath="$PROJECT_DIR$/TwoTimePad.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../TwoTimePad copy/TwoTimePad copy.iml" filepath="$PROJECT_DIR$/../TwoTimePad copy/TwoTimePad copy.iml" />
     </modules>
   </component>
 </project>
