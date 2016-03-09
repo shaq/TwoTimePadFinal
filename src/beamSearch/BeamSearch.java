@@ -135,7 +135,6 @@ public class BeamSearch {
          This is 100% since every string starts from the empty string.
          **/
         languageModel.put("", Math.log(100));
-        HashMap<String, Integer> ngrams = ngramModel;
 
         // The two candidate strings to be used repeatedly in the algorithm.
         String plaintext_one = "";
@@ -225,24 +224,24 @@ public class BeamSearch {
                     // This logic also implements smoothing.
                     if (!languageModel.containsKey(p_one_ngram) && !languageModel.containsKey(p_two_ngram)) {
 
-                        p_one_prob = model.laplaceSmoothing(ngrams, p_one_ngram, corpus);
-                        p_two_prob = model.laplaceSmoothing(ngrams, p_two_ngram, corpus);
-                        p_one_n_minus_prob = model.laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus);
-                        p_two_n_minus_prob = model.laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus);
+                        p_one_prob = model.laplaceSmoothing(ngramModel, p_one_ngram, corpus);
+                        p_two_prob = model.laplaceSmoothing(ngramModel, p_two_ngram, corpus);
+                        p_one_n_minus_prob = model.laplaceSmoothing(ngramModel, pOne_n_minus_one_gram, corpus);
+                        p_two_n_minus_prob = model.laplaceSmoothing(ngramModel, pTwo_n_minus_one_gram, corpus);
                         System.out.println("both not in lm");
                     } else if (!languageModel.containsKey(p_one_ngram) && languageModel.containsKey(p_two_ngram)) {
 
-                        p_one_prob = model.laplaceSmoothing(ngrams, p_one_ngram, corpus);
+                        p_one_prob = model.laplaceSmoothing(ngramModel, p_one_ngram, corpus);
                         p_two_prob = languageModel.get(p_two_ngram);
-                        p_one_n_minus_prob = model.laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus);
+                        p_one_n_minus_prob = model.laplaceSmoothing(ngramModel, pOne_n_minus_one_gram, corpus);
                         p_two_n_minus_prob = languageModel.get(pTwo_n_minus_one_gram);
                         System.out.println("p1 not in lm");
                     } else if (languageModel.containsKey(p_one_ngram) && !languageModel.containsKey(p_two_ngram)) {
 
                         p_one_prob = languageModel.get(p_one_ngram);
-                        p_two_prob = model.laplaceSmoothing(ngrams, p_two_ngram, corpus);
+                        p_two_prob = model.laplaceSmoothing(ngramModel, p_two_ngram, corpus);
                         p_one_n_minus_prob = languageModel.get(pOne_n_minus_one_gram);
-                        p_two_n_minus_prob = model.laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus);
+                        p_two_n_minus_prob = model.laplaceSmoothing(ngramModel, pTwo_n_minus_one_gram, corpus);
                         System.out.println("p2 not in lm");
                     } else {
 
