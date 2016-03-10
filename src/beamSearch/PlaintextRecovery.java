@@ -34,7 +34,7 @@ public class PlaintextRecovery {
         String corpus = parse.processFiles();
         int n = ngram.getN();
         int pruneNumber = 100;
-        byte[] ciphertext = beam.getCipherText(6, corpus);
+        byte[] ciphertext = beam.getCipherText(10, corpus);
         HashMap<String, Integer> ngramModel = NGram.addNGrams(corpus, 1, n);
         HashMap<String, Double> languageModel = lm.generateLanguageModel(corpus, n);
 

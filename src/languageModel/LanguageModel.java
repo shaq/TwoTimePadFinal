@@ -33,7 +33,7 @@ public class LanguageModel {
             String ngram = entry.getKey().toString();
             probEstimate = model.laplaceSmoothing(ngrams, ngram, corpus);
             System.out.println("probEstimate: " + probEstimate);
-            languageModel.put(ngram, probEstimate);
+            languageModel.put(ngram, Math.log(probEstimate));
         }
 
         return languageModel;

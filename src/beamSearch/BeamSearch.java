@@ -154,8 +154,8 @@ public class BeamSearch {
         Double p_two_prob = 0.0;
         Double p_one_nminus_prob = 0.0;
         Double p_two_nminus_prob = 0.0;
-        Double p_one_next_prob = 0.0;
-        Double p_two_next_prob = 0.0;
+//        Double p_one_next_prob = 0.0;
+//        Double p_two_next_prob = 0.0;
         String p_one_ngram = "";
         String p_two_ngram = "";
         String pOne_n_minus_one_gram = "";
@@ -204,7 +204,7 @@ public class BeamSearch {
                     plaintext_one = (candidates.get(candNum)).getPlaintextOne() + p_one_next;
                     plaintext_two = (candidates.get(candNum)).getPlaintextTwo() + p_two_next;
 
-                    int p_length = (plaintext_one.length() + plaintext_two.length()) / 2;
+                    /*int p_length = (plaintext_one.length() + plaintext_two.length()) / 2;
 
 
                     // Logic used to control of the initialisation of the ngrams and
@@ -237,24 +237,24 @@ public class BeamSearch {
                     // This logic also implements smoothing.
                     if (!languageModel.containsKey(p_one_ngram) && !languageModel.containsKey(p_two_ngram)) {
 
-                        p_one_prob = model.laplaceSmoothing(ngrams, p_one_ngram, corpus);
-                        p_two_prob = model.laplaceSmoothing(ngrams, p_two_ngram, corpus);
-                        p_one_nminus_prob = model.laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus);
-                        p_two_nminus_prob = model.laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus);
+                        p_one_prob = Math.log(model.laplaceSmoothing(ngrams, p_one_ngram, corpus));
+                        p_two_prob = Math.log(model.laplaceSmoothing(ngrams, p_two_ngram, corpus));
+                        p_one_nminus_prob = Math.log(model.laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus));
+                        p_two_nminus_prob = Math.log(model.laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus));
                         System.out.println("both not in lm");
                     } else if (!languageModel.containsKey(p_one_ngram) && languageModel.containsKey(p_two_ngram)) {
 
-                        p_one_prob = model.laplaceSmoothing(ngrams, p_one_ngram, corpus);
+                        p_one_prob = Math.log(model.laplaceSmoothing(ngrams, p_one_ngram, corpus));
                         p_two_prob = languageModel.get(p_two_ngram);
-                        p_one_nminus_prob = model.laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus);
+                        p_one_nminus_prob = Math.log(model.laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus));
                         p_two_nminus_prob = languageModel.get(pTwo_n_minus_one_gram);
                         System.out.println("p1 not in lm");
                     } else if (languageModel.containsKey(p_one_ngram) && !languageModel.containsKey(p_two_ngram)) {
 
                         p_one_prob = languageModel.get(p_one_ngram);
-                        p_two_prob = model.laplaceSmoothing(ngrams, p_two_ngram, corpus);
+                        p_two_prob = Math.log(model.laplaceSmoothing(ngrams, p_two_ngram, corpus));
                         p_one_nminus_prob = languageModel.get(pOne_n_minus_one_gram);
-                        p_two_nminus_prob = model.laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus);
+                        p_two_nminus_prob = Math.log(model.laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus));
                         System.out.println("p2 not in lm");
                     } else {
 
@@ -265,7 +265,7 @@ public class BeamSearch {
                         System.out.println("both in lm");
                     }
 
-                    System.out.println("p_length: " + p_length);
+                    System.out.println("p_length: " + p_length);*/
 //
 //                    System.out.println("p1 prob " + p_one_prob);
 //                    System.out.println("p1 n- prob " + p_one_nminus_prob);
@@ -301,19 +301,25 @@ public class BeamSearch {
                         cand_prob_one = t.getPercentageOne() + p_one_prob - p_one_nminus_prob;
                         cand_prob_two = t.getPercentageTwo() + p_two_prob - p_two_nminus_prob;
                     }*/
+                   /* if(p_length > 1){
+                        cand_prob_one = t.getPercentageOne() + p_one_prob - p_one_nminus_prob;
+                        cand_prob_two = t.getPercentageTwo() + p_two_prob - p_two_nminus_prob;
+                    } else {
+                        cand_prob_one = t.getPercentageOne() + p_one_prob;
+                        cand_prob_two = t.getPercentageTwo() + p_two_prob;
+                    }*/
 
-                    cand_prob_one = t.getPercentageOne() + p_one_prob - p_one_nminus_prob;
-                    cand_prob_two = t.getPercentageTwo() + p_two_prob - p_two_nminus_prob;
-
+                    Double[] candProb = model.calculateCandidateProbability(n, corpus, ngrams, languageModel,
+                            plaintext_one, plaintext_two, t);
                     System.out.println("1: " + plaintext_one);
-                    System.out.println("P1 = " + cand_prob_one);
+                    System.out.println("P1 = " + candProb[0]);
 
                     System.out.println("2: " + plaintext_two);
-                    System.out.println("P2 = " + cand_prob_two);
+                    System.out.println("P2 = " + candProb[1]);
 
 
 //					System.out.println();
-                    temp.add(new Tuple(plaintext_one, plaintext_two, cand_prob_one, cand_prob_two));
+                    temp.add(new Tuple(plaintext_one, plaintext_two, candProb[0], candProb[1]));
 
                 }
 
