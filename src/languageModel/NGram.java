@@ -32,7 +32,7 @@ public class NGram {
      */
     public static HashMap<String, Integer> addNGrams(String text, final int min, final int max) {
         HashMap<String, Integer> ngrams = new HashMap<String, Integer>();
-        text = text.toLowerCase();
+//        text = text.toLowerCase();
 
         for (int i = min; i < max + 1; i++) {
             for (int j = 0; i + j - 1 < text.length(); j++) {

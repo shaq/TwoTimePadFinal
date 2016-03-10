@@ -85,13 +85,13 @@ public class NGramModel {
 
             // Calculate the smoothing estimate for the given n-gram 'key' as a log probability.
             // (count of given n-gram ) + 1 / (count of (n-1)-grams for given n-gram) + Vocabulary size
-            smoothingEstimate = Math.log(1.0 + keyCount / denomCount + ngrams.size());
+            smoothingEstimate = Math.log((1.0 + keyCount) / (denomCount + ngrams.size()));
 
         } else {
 
             // Calculate the smoothing estimate for the given n-gram 'key' as a log probability.
             // (count of given n-gram) + 1 / (count of all characters in the corpus) + Vocabulary size
-            smoothingEstimate = Math.log(1.0 + keyCount / (corpus.length() + ngrams.size()));
+            smoothingEstimate = Math.log((1.0 + keyCount) / (corpus.length() + ngrams.size()));
         }
 
         return smoothingEstimate;

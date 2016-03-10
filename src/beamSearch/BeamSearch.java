@@ -132,13 +132,14 @@ public class BeamSearch {
      * @param ciphertext    : The XOR of two ciphertexts, of which we are trying to recover the plaintexts.
      * @return candidates : The list of top candidate ciphertexts returned as a result of the algorithm.
      **/
-    public static ArrayList<Tuple> beamSearch(String corpus, HashMap<String, Integer> ngramModel, HashMap<String, Double> languageModel, int n, int pruneNumber, byte[] ciphertext) {
+    public static ArrayList<Tuple> beamSearch(String corpus, HashMap<String, Integer> ngramModel, HashMap<String,
+            Double> languageModel, int n, int pruneNumber, byte[] ciphertext) {
 
         /**
          Adding the log probability of the empty string to the language model.
          This is 100% since every string starts from the empty string.
          **/
-        Double emptyStringProb = Math.log(100.0);
+        Double emptyStringProb = Math.log(1.0);
         languageModel.put("", emptyStringProb);
         HashMap<String, Integer> ngrams = ngramModel;
 
@@ -153,6 +154,8 @@ public class BeamSearch {
         Double p_two_prob = 0.0;
         Double p_one_nminus_prob = 0.0;
         Double p_two_nminus_prob = 0.0;
+        Double p_one_next_prob = 0.0;
+        Double p_two_next_prob = 0.0;
         String p_one_ngram = "";
         String p_two_ngram = "";
         String pOne_n_minus_one_gram = "";
@@ -179,6 +182,8 @@ public class BeamSearch {
 
             for (int candNum = 0; candNum < candidates.size(); candNum++) {
 
+                Tuple t = (candidates.get(candNum));
+
 //                cand_prob_one = 0.0;
 //                cand_prob_two = 0.0;
 
@@ -202,7 +207,8 @@ public class BeamSearch {
                     int p_length = (plaintext_one.length() + plaintext_two.length()) / 2;
 
 
-                    // Logic used to control of the initialisation of the ngrams and (n-1)grams to be used in the probability
+                    // Logic used to control of the initialisation of the ngrams and
+                    // (n-1)grams to be used in the probability
                     // logic below.
                     if (p_length > n) {
 
@@ -226,7 +232,7 @@ public class BeamSearch {
                         pTwo_n_minus_one_gram = plaintext_two.substring(p_length);
 
                     }
-
+                    System.out.println("--------------------------------------");
                     // Setting up variables for calculating the rolling probability of our candidate plaintexts.
                     // This logic also implements smoothing.
                     if (!languageModel.containsKey(p_one_ngram) && !languageModel.containsKey(p_two_ngram)) {
@@ -260,26 +266,52 @@ public class BeamSearch {
                     }
 
                     System.out.println("p_length: " + p_length);
+//
+//                    System.out.println("p1 prob " + p_one_prob);
+//                    System.out.println("p1 n- prob " + p_one_nminus_prob);
+//
+//                    System.out.println("p2 prob " + p_two_prob);
+//                    System.out.println("p2 n- prob " + p_two_nminus_prob);
+
                     // Rolling probability of candidate plaintexts are calculated here.
                     // log(Pr(P1 || c_i)) = log(Pr(P1)) + log(Pr(ngram)) - log(Pr((n-1)gram))
-                    Tuple t = (candidates.get(candNum));
-//                    if (p_length == 1) {
-//                        cand_prob_one = p_one_prob;
-//                        cand_prob_two = p_two_prob;
-//
-//                    } else {
+               /*     if (p_length == 1) {
+                        cand_prob_one = p_one_prob;
+                        cand_prob_two = p_two_prob;
+
+                    } else if (p_length < n){
+
+                        if(!languageModel.containsKey(p_one_next) && !languageModel.containsKey(p_two_next)) {
+                            p_one_next_prob = model.laplaceSmoothing(ngrams, p_one_next+"",corpus);
+                            p_two_next_prob = model.laplaceSmoothing(ngrams, p_two_next+"",corpus);
+                        } else if(!languageModel.containsKey(p_one_next) && languageModel.containsKey(p_two_next)){
+                            p_one_next_prob = model.laplaceSmoothing(ngrams, p_one_next+"",corpus);
+                            p_two_next_prob = languageModel.get(p_two_next);
+                        } else if(languageModel.containsKey(p_one_next) && !languageModel.containsKey(p_two_next)){
+                            p_one_next_prob = languageModel.get(p_one_next);
+                            p_two_next_prob = model.laplaceSmoothing(ngrams, p_two_next+"",corpus);
+                        } else {
+                            p_one_next_prob = languageModel.get(p_one_next);
+                            p_two_next_prob = languageModel.get(p_two_next);
+                        }
+
+                        cand_prob_one = t.getPercentageOne() + p_one_prob - p_one_next_prob;
+                        cand_prob_two = t.getPercentageTwo() + p_two_prob - p_two_next_prob;
+                   } else {
                         cand_prob_one = t.getPercentageOne() + p_one_prob - p_one_nminus_prob;
                         cand_prob_two = t.getPercentageTwo() + p_two_prob - p_two_nminus_prob;
-//                    }
+                    }*/
+
+                    cand_prob_one = t.getPercentageOne() + p_one_prob - p_one_nminus_prob;
+                    cand_prob_two = t.getPercentageTwo() + p_two_prob - p_two_nminus_prob;
+
                     System.out.println("1: " + plaintext_one);
                     System.out.println("P1 = " + cand_prob_one);
-//					System.out.println("p1 prob " + p_one_prob);
-//					System.out.println("p2 prob " + p_two_prob);
-//					System.out.println("p1 n- prob " + p_one_nminus_prob);
-//					System.out.println("p2 n- prob " + p_two_nminus_prob);
 
                     System.out.println("2: " + plaintext_two);
                     System.out.println("P2 = " + cand_prob_two);
+
+
 //					System.out.println();
                     temp.add(new Tuple(plaintext_one, plaintext_two, cand_prob_one, cand_prob_two));
 
@@ -287,6 +319,7 @@ public class BeamSearch {
 
             }
 
+//            System.out.println("++++++++++++++++++++ Before sorting ++++++++++++++++++++\n" + temp);
             // Sorting ('pruneNumber' x 256) candidates.
             Collections.sort(temp, new Comparator<Tuple>() {
 
@@ -297,9 +330,9 @@ public class BeamSearch {
                 }
 
             });
-
+//            System.out.println("++++++++++++++++++++ After sorting ++++++++++++++++++++\n" + temp);
             // Setting 'candidates' to be the top 'pruneNumber' plaintext candidates.
-            temp = new ArrayList<Tuple>(temp.subList(0, pruneNumber + 1));
+            temp = new ArrayList<Tuple>(temp.subList(0, pruneNumber));
 
             candidates = temp;
 

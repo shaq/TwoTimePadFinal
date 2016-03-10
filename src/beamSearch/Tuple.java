@@ -54,12 +54,14 @@ public class Tuple {
     public boolean equals(Tuple one, Tuple two) {
         Double percentage_one = one.getPercentageOne() + one.getPercentageTwo();
         Double percentage_two = two.getPercentageTwo() + two.getPercentageTwo();
-        return one.getPlaintextOne() == two.getPlaintextOne() && one.getPlaintextTwo() == two.getPlaintextTwo() && percentage_one == percentage_two;
+        return one.getPlaintextOne() == two.getPlaintextOne() && one.getPlaintextTwo() == two.getPlaintextTwo() &&
+                percentage_one == percentage_two;
 
     }
 
     @Override
     public String toString() {
-        return "[ Plaintext One: " + getPlaintextOne() + ", Plaintext Two: " + getPlaintextTwo() + ", Percentage: " + Math.exp(getPercentageOne() + getPercentageTwo()) + "% ]";
+        return "[ Plaintext One: " + getPlaintextOne() + ", Plaintext Two: " + getPlaintextTwo() + ", Percentage: " +
+                (Math.exp(getPercentageOne() + getPercentageTwo())) * 100.0 + "% ]";
     }
 }

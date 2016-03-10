@@ -38,6 +38,11 @@ public class PlaintextRecovery {
         HashMap<String, Integer> ngramModel = NGram.addNGrams(corpus, 1, n);
         HashMap<String, Double> languageModel = lm.generateLanguageModel(corpus, n);
 
+        System.out.println("corpus length " + corpus.length());
+        System.out.println("vocab size " + languageModel.size());
+        System.out.println(ngramModel);
+        System.out.println(languageModel);
+
         ArrayList<Tuple> candidates = beam.beamSearch(corpus, ngramModel, languageModel, n, pruneNumber, ciphertext);
         recoverPlaintexts(candidates);
 
