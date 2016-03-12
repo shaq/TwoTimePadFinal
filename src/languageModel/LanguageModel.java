@@ -3,6 +3,7 @@ package languageModel;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class LanguageModel {
@@ -20,7 +21,7 @@ public class LanguageModel {
      * @param ngrams : Container of all n-grams
      * @return model : HashMap<String, Double> that is used to represent the language model.
      */
-    public HashMap<String, Double> createModel(HashMap<String, Integer> ngrams, String corpus) {
+    public HashMap<String, Double> createModel(Map<String, Integer> ngrams, String corpus) {
         // An iterator for the given HashMap.
         Iterator<Entry<String, Integer>> it = ngrams.entrySet().iterator();
 
@@ -54,14 +55,11 @@ public class LanguageModel {
         HashMap<String, Integer> ngrams = new HashMap<String, Integer>();
         HashMap<String, Double> languageModel = new HashMap<String, Double>();
 
-        // Size of n-gram
-        int n_size = n;
-
         // Getting the user selected corpus and storing it in a string.
         referenceText = corpus;
 
         // Creating all n-grams of size from 1 to n, using the parsed corpus.
-        ngrams = NGram.addNGrams(referenceText, 1, n_size);
+        ngram.addNGrams(ngrams, referenceText, 1, n);
 
         // Creating the language model (estimating all probabilities of n-grams created above).
         languageModel = createModel(ngrams, corpus);

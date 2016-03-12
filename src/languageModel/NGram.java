@@ -1,8 +1,8 @@
 package languageModel;
 
-import javax.swing.*;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 
@@ -28,10 +28,9 @@ public class NGram {
      * @param text : The corpus to generate n-grams from.
      * @param min  : Minimum length n-grams to be stored.
      * @param max  : Maximum length n-grams to be stored.
-     * @return ngrams : A HashMap containing all n-grams along with their counts.
      */
-    public static HashMap<String, Integer> addNGrams(String text, final int min, final int max) {
-        HashMap<String, Integer> ngrams = new HashMap<String, Integer>();
+    public void addNGrams(Map<String, Integer> ngrams, String text, final int min, final int max) {
+//        ConcurrentHashMap<String, Integer> ngrams = new ConcurrentHashMap<String, Integer>();
 //        text = text.toLowerCase();
 
         for (int i = min; i < max + 1; i++) {
@@ -45,7 +44,6 @@ public class NGram {
             }
         }
 
-        return ngrams;
     }
 
     /**
@@ -55,7 +53,7 @@ public class NGram {
      * @param ngrams : A container for all n-grams.
      * @return count : The number of all n-grams.
      */
-    public static int getNumberOfNGrams(final HashMap<String, Integer> ngrams) {
+    public int getNumberOfNGrams(final HashMap<String, Integer> ngrams) {
         // An iterator for the given HashMap.
         Iterator<Entry<String, Integer>> it = ngrams.entrySet().iterator();
         Integer count = 0;
@@ -69,18 +67,6 @@ public class NGram {
         }
 
         return count;
-    }
-
-    /**
-     * A method to allow user to input the value of n, for generating n-grams,
-     * via  GUI.
-     *
-     * @return n : he value of n, for generating n-grams.
-     */
-    public Integer getN() {
-        String input = JOptionPane.showInputDialog("Enter N:", "3");
-        Integer n = Integer.parseInt(input);
-        return n;
     }
 
 }

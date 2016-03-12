@@ -1,12 +1,11 @@
 package languageModel;
 
-import org.apache.commons.io.FileUtils;
-
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A class that allows a user to select the file they want to parse,
@@ -31,20 +30,35 @@ public class ParseCorpus {
     }
 
     /**
+     * A method to allow user to input the value of n, for generating n-grams,
+     * via  GUI.
+     *
+     * @return n : he value of n, for generating n-grams.
+     */
+    public static Integer getN() {
+        String input = JOptionPane.showInputDialog("Enter N:", "3");
+        Integer n = Integer.parseInt(input);
+        return n;
+    }
+
+    /**
      * Brings up chooser for user to select a file or  a directory to be parsed.
      *
      * @return Scanner for user selected file, null if file not found.
      * @throws IOException
      */
-    public String processFiles() throws IOException {
+    public ConcurrentHashMap<String, Integer> processFiles(ConcurrentHashMap<String, Integer> languageModel) throws IOException, InterruptedException {
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         chooser.setDialogTitle("Select a File or a Directory as your Corpus");
         String text = "";
+        int n;
+//        ArrayList<ConcurrentHashMap<String, Integer>> ngramModels = new ArrayList<ConcurrentHashMap<String, Integer>>;
 
         int retval = chooser.showOpenDialog(null);
 
         if (retval == JFileChooser.APPROVE_OPTION) {
             File f = chooser.getSelectedFile();
+            n = getN();
             Scanner s;
 
             if (f.isDirectory()) {
@@ -59,16 +73,25 @@ public class ParseCorpus {
                     File file = filesInDirectory[i];
                     String content = "";
                     if (file.isFile()) {
-                        content = FileUtils.readFileToString(file);
+//                        content = FileUtils.readFileToString(file);
+                        Split split = new Split(file, languageModel, n);
+                        int noThreads = split.getThreadNumber();
+                        long chunks = split.getChunkNumber(noThreads);
+                        split.processAll(noThreads, chunks);
                     }
 
-                    text += content;
+//                    text += content;
                 }
-                return text;
+                return languageModel;
             } else {
-                s = new Scanner(f);
+                /*s = new Scanner(f);
                 text = readFile(s);
-                return text;
+                return text;*/
+                Split split = new Split(f, languageModel, n);
+                int noThreads = split.getThreadNumber();
+                long chunks = split.getChunkNumber(noThreads);
+                split.processAll(noThreads, chunks);
+                return languageModel;
             }
 
         }

@@ -6,7 +6,7 @@ import languageModel.ParseCorpus;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Shaquizzle on 09/03/
@@ -29,24 +29,25 @@ public class PlaintextRecovery {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
-        String corpus = parse.processFiles();
-        int n = ngram.getN();
-        int pruneNumber = 10;
-        byte[] ciphertext = beam.getCipherText(10, corpus);
-        HashMap<String, Integer> ngramModel = NGram.addNGrams(corpus, 1, n);
-        HashMap<String, Double> languageModel = lm.generateLanguageModel(corpus, n);
+//        String corpus = parse.processFiles();
+//        int n = ngram.getN();
+//        int pruneNumber = 10;
+        ConcurrentHashMap<String, Integer> ngramModel = new ConcurrentHashMap<String, Integer>();
+//        byte[] ciphertext = beam.getCipherText(10, corpus);
+        ngramModel = parse.processFiles(ngramModel);
+//        HashMap<String, Double> languageModel = lm.generateLanguageModel(corpus, n);
 
-        System.out.println("corpus length " + corpus.length());
-        System.out.println("vocab size " + languageModel.size());
+//        System.out.println("corpus length " + corpus.length());
+//        System.out.println("vocab size " + languageModel.size());
         System.out.println(ngramModel);
-        System.out.println(languageModel);
+//        System.out.println(languageModel);
 //        languageModel.put("", Math.log(1.0));
 //        System.out.println("Log probability of the empty string = " + languageModel.get(""));
 
-        ArrayList<Tuple> candidates = beam.beamSearch(corpus, ngramModel, languageModel, n, pruneNumber, ciphertext);
-        recoverPlaintexts(candidates);
+//        ArrayList<Tuple> candidates = beam.beamSearch(corpus, ngramModel, languageModel, n, pruneNumber, ciphertext);
+//        recoverPlaintexts(candidates);
 
     }
 
