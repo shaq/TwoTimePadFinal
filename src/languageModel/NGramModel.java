@@ -44,12 +44,12 @@ public class NGramModel {
 
             // Calculate the MLE for the given n-gram 'key' as a log probability.
             // (count of given n-gram ) / (count of (n-1)-grams for given n-gram)
-            nGramMLE = Math.log(keyCount / denomCount);
+            nGramMLE = (keyCount / denomCount);
 
         } else {
 
             // Calculate the MLE for the given n-gram 'key' as a log probability.
-            nGramMLE = Math.log(keyCount / corpusLength.doubleValue());
+            nGramMLE = (keyCount / corpusLength.doubleValue());
         }
 
         return nGramMLE;
@@ -87,13 +87,13 @@ public class NGramModel {
 
             // Calculate the smoothing estimate for the given n-gram 'key' as a log probability.
             // (count of given n-gram ) + 1 / (count of (n-1)-grams for given n-gram) + Vocabulary size
-            smoothingEstimate = ((1.0 + keyCount) / (denomCount + ngrams.size()));
+            smoothingEstimate = (1.0 + keyCount) / (denomCount + ngrams.size());
 
         } else {
 
             // Calculate the smoothing estimate for the given n-gram 'key' as a log probability.
             // (count of given n-gram) + 1 / (count of all characters in the corpus) + Vocabulary size
-            smoothingEstimate = ((1.0 + keyCount) / (corpus.length() + ngrams.size()));
+            smoothingEstimate = (1.0 + keyCount) / (corpus.length() + ngrams.size());
         }
 
         return smoothingEstimate;
@@ -114,7 +114,7 @@ public class NGramModel {
         Double p_one_nminus_prob;
         Double p_two_nminus_prob;
 
-        int p_length = (plaintext_one.length() + plaintext_two.length()) / 2;
+        int p_length = plaintext_one.length();
 
 
         // Logic used to control of the initialisation of the ngrams and
@@ -124,15 +124,15 @@ public class NGramModel {
 
             p_one_ngram = plaintext_one.substring(p_length - n, p_length);
             p_two_ngram = plaintext_two.substring(p_length - n, p_length);
-            pOne_n_minus_one_gram = p_one_ngram.substring(0, p_one_ngram.length());
-            pTwo_n_minus_one_gram = p_two_ngram.substring(0, p_two_ngram.length());
+            pOne_n_minus_one_gram = p_one_ngram.substring(0, p_one_ngram.length() - 1);
+            pTwo_n_minus_one_gram = p_two_ngram.substring(0, p_two_ngram.length() - 1);
 
-        } else if (p_length > 1) {
+        } else if (p_length > 1 && p_length < n) {
 
             p_one_ngram = plaintext_one;
             p_two_ngram = plaintext_two;
-            pOne_n_minus_one_gram = plaintext_one.substring(0, p_length);
-            pTwo_n_minus_one_gram = plaintext_two.substring(0, p_length);
+            pOne_n_minus_one_gram = plaintext_one.substring(0, p_length - 1);
+            pTwo_n_minus_one_gram = plaintext_two.substring(0, p_length - 1);
 
         } else {
 
@@ -199,7 +199,7 @@ public class NGramModel {
 //        if(p_length > 1){
         cand_prob_one = candidate.getPercentageOne() + p_one_prob - p_one_nminus_prob;
         cand_prob_two = candidate.getPercentageTwo() + p_two_prob - p_two_nminus_prob;
-        /*} else {
+/*        } else {
             cand_prob_one = candidate.getPercentageOne() + p_one_prob;
             cand_prob_two = candidate.getPercentageTwo() + p_two_prob;
         }*/

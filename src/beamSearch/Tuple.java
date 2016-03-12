@@ -62,6 +62,26 @@ public class Tuple {
     @Override
     public String toString() {
         return "[ Plaintext One: " + getPlaintextOne() + ", Plaintext Two: " + getPlaintextTwo() + ", Percentage: " +
-                (Math.exp(getPercentageOne() + getPercentageTwo())) * 100.0 + "% ]";
+                (Math.exp(getPercentageOne() + getPercentageTwo())) + "% ]";
     }
+
+    /*static class TupleComparator implements Comparator<Tuple> {
+
+        public int compare(Tuple t1, Tuple t2) {
+
+            Double t1_perc = t1.getPercentageOne() + t1.getPercentageTwo();
+            Double t2_perc = t2.getPercentageOne() + t2.getPercentageTwo();
+
+            if (t1_perc == t2_perc) {
+                return 0;
+            } else if (t1_perc > t2_perc) {
+                return 1;
+            } else {
+                return -1;
+            }
+
+        }
+
+    }*/
+
 }

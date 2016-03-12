@@ -33,7 +33,7 @@ public class PlaintextRecovery {
 
         String corpus = parse.processFiles();
         int n = ngram.getN();
-        int pruneNumber = 100;
+        int pruneNumber = 10;
         byte[] ciphertext = beam.getCipherText(10, corpus);
         HashMap<String, Integer> ngramModel = NGram.addNGrams(corpus, 1, n);
         HashMap<String, Double> languageModel = lm.generateLanguageModel(corpus, n);
@@ -42,6 +42,8 @@ public class PlaintextRecovery {
         System.out.println("vocab size " + languageModel.size());
         System.out.println(ngramModel);
         System.out.println(languageModel);
+//        languageModel.put("", Math.log(1.0));
+//        System.out.println("Log probability of the empty string = " + languageModel.get(""));
 
         ArrayList<Tuple> candidates = beam.beamSearch(corpus, ngramModel, languageModel, n, pruneNumber, ciphertext);
         recoverPlaintexts(candidates);
