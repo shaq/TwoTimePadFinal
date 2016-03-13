@@ -120,7 +120,7 @@ public class Split {
 
     /**
      * A method that splits a file up into given chunks.
-     * It will then process each chunk in parallel using the given number of threads.
+     * It will then process each chunk in parallel using the given number of threads.splir
      *
      * @param noOfThreads : The number of threads to be run in parallel
      * @param chunkSize   : The chunk size that each thread will process
