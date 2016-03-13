@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NGramModel {
 
@@ -100,8 +101,7 @@ public class NGramModel {
         return smoothingEstimate;
     }
 
-    public Double[] calculateCandidateProbability(int n, String corpus, Map<String, Integer> ngrams, HashMap<String,
-            Double> languageModel, String plaintext_one, String plaintext_two,
+    public Double[] calculateCandidateProbability(int n, String corpus, Map<String, Integer> ngrams, ConcurrentHashMap<String, Double> languageModel, String plaintext_one, String plaintext_two,
                                                   Tuple candidate) {
 
         String p_one_ngram;

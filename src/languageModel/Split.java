@@ -1,15 +1,11 @@
 package languageModel;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import sun.beans.editors.DoubleEditor;
+
+import java.io.*;
+import java.util.Map.Entry;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * A class that splits files up into chunks then processes them chunk by chunk to generate n-grams.
@@ -18,12 +14,21 @@ import java.util.concurrent.Executors;
  * @author Shaquille Momoh
  */
 public class Split {
-    NGram ngram = new NGram();
+    private LanguageModel lm = new LanguageModel();
+    private NGram ngram = new NGram();
     private int n;
     private File file;
-    private ConcurrentHashMap<String, Integer> languageModel;
+    private static ConcurrentHashMap<String, Integer> nGramModel;
+    private static ConcurrentHashMap<String, Double> languageModel;
 
     public Split() {
+    }
+
+    public Split(File file, ConcurrentHashMap<String, Double> languageModel, int n, boolean isLangModel)  {
+        this.languageModel = languageModel;
+        this.file = file;
+        this.n = n;
+        isLangModel = true;
     }
 
     /**
@@ -35,8 +40,8 @@ public class Split {
      * @param n             : The maximum size of n-gram to be stored.
      */
     public Split(File file, ConcurrentHashMap<String, Integer> languageModel, int n) {
+        this.nGramModel = languageModel;
         this.file = file;
-        this.languageModel = languageModel;
         this.n = n;
     }
 
@@ -60,12 +65,16 @@ public class Split {
      * A method that returns the size of chunks to be taken by each thread, given noumber of threads
      * and length of file.
      *
-     * @param noThreads : The number of threads to be used.
+     * @param noOfThreads : The number of threads to be used.
      * @return : The chunks size.
      * @throws IOException
      */
-    public long getChunkNumber(int noThreads) throws IOException {
-        return this.file.length() / noThreads;
+    public long getFileChunkNumber(int noOfThreads) throws IOException {
+        return this.file.length() / noOfThreads;
+    }
+
+    public int getNGramChunkNumber(int noOfThreads) {
+         return languageModel.size() / noOfThreads;
     }
 
     public String fileToString(InputStream is) throws IOException {
@@ -88,13 +97,13 @@ public class Split {
      * @param end   : The end of the chunk to be processed.
      * @return : An informative message about the status of the file.
      */
-    public String processPart(long start, long end) throws Exception {
+    public String processPartCorpus(long start, long end) throws Exception {
         InputStream is = new FileInputStream(file);
         is.skip(start);
 
         String text = fileToString(is);
 
-        ngram.addNGrams(languageModel, text, 1, n);
+        ngram.addNGrams(nGramModel, text, 1, n);
         System.out.println("Computing the part from " + start + " to " + end);
         Thread.sleep(1000);
         System.out.println("Finished the part from " + start + " to " + end);
@@ -103,16 +112,41 @@ public class Split {
         return "Chunk closed";
     }
 
+    public ArrayList<Entry<String,Integer>> getLanguageModelChunk(int start, int end)  {
+        ArrayList<Entry<String, Integer>> ngramList = new ArrayList<>(nGramModel.entrySet());
+        return new ArrayList<>(ngramList.subList(start, end));
+    }
+
+    public Map<String, Double> processPartLanguageModel(int start, int end) throws IOException, InterruptedException {
+        ArrayList<Entry<String, Integer>> ngramList = getLanguageModelChunk(start, end);
+        InputStream is = new FileInputStream(file);
+        String corpus = fileToString(is);
+        Map<String, Double> map = lm.createModel(nGramModel, ngramList, corpus);
+        System.out.println("Computing the chunk from " + start + " to " + end);
+        Thread.sleep(1000);
+        System.out.println("Finished the chunk from " + start + " to " + end);
+        return map;
+    }
+
     /**
      * A method that creates a task that will process the given portion of the file when executed.
      *
      * @return : The task that is created.
      */
-    public Callable<String> processPartTask(final long start, final long end) {
+    public Callable<String> processPartTaskCorpus(final long start, final long end) {
         return new Callable<String>() {
             public String call()
                     throws Exception {
-                return processPart(start, end);
+                return processPartCorpus(start, end);
+            }
+        };
+    }
+
+    public Callable<Map<String, Double>> processPartTaskNGram(final int start, final int end) {
+        return new Callable<Map<String, Double>>() {
+            public Map<String, Double> call()
+                    throws Exception {
+                return processPartLanguageModel(start, end);
             }
         };
     }
@@ -127,17 +161,37 @@ public class Split {
      * @return : A ConcurrentHashMap containing all the n-grams for the given file, along with their counts.
      * @throws InterruptedException
      */
-    public ConcurrentHashMap<String, Integer> processAll(int noOfThreads, long chunkSize) throws InterruptedException {
+    public ConcurrentHashMap<String, Integer> processAllCorpus(int noOfThreads, long chunkSize) throws InterruptedException {
         int count = (int) ((file.length() + chunkSize - 1) / chunkSize);
         List<Callable<String>> tasks = new ArrayList<Callable<String>>(count);
         for (int i = 0; i < count; i++)
-            tasks.add(processPartTask(i * chunkSize, Math.min(file.length(), (i + 1) * chunkSize)));
+            tasks.add(processPartTaskCorpus(i * chunkSize, Math.min(file.length(), (i + 1) * chunkSize)));
         ExecutorService es = Executors.newFixedThreadPool(noOfThreads);
 
         es.invokeAll(tasks);
         es.shutdown();
-        return languageModel;
+        return nGramModel;
     }
 
+
+    public ConcurrentHashMap<String, Double> processAllNGrams(int noOfThreads, int chunkSize) throws InterruptedException,
+            ExecutionException {
+
+        int count = noOfThreads;
+        List<Callable<Map<String, Double>>> tasks = new ArrayList<>(count);
+        for(int i = 0; i < count; i++)
+            tasks.add(processPartTaskNGram(i * chunkSize, Math.min(languageModel.size(), (i + 1) * chunkSize)));
+        ExecutorService es = Executors.newFixedThreadPool(noOfThreads);
+
+        List<Future<Map<String, Double>>> results = es.invokeAll(tasks);
+
+        for(Future<Map<String, Double>> result : results){
+            languageModel.putAll(result.get());
+        }
+
+        es.shutdown();
+        return languageModel;
+
+    }
 
 }

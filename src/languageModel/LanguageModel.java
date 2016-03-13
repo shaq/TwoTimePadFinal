@@ -1,5 +1,7 @@
 package languageModel;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -18,7 +20,8 @@ public class LanguageModel {
      * @param ngrams : Container of all n-grams
      * @return model : HashMap<String, Double> that is used to represent the language model.
      */
-    public HashMap<String, Double> createModel(Map<String, Integer> ngrams, String corpus) {
+    public HashMap<String, Double> createModel(Map<String, Integer> ngrams, ArrayList<Entry<String, Integer>> ngramList,
+                                               String corpus) {
 
         // An iterator for the given HashMap.
         Iterator<Entry<String, Integer>> it = ngrams.entrySet().iterator();

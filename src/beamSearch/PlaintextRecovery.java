@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A class that recovers the plaintexts using methods from 'BeamSearch' and 'LanguageModel'.
@@ -44,7 +45,7 @@ public class PlaintextRecovery {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
 
         File corpus = parse.getCorpus();
         InputStream is = new FileInputStream(corpus);
@@ -54,7 +55,13 @@ public class PlaintextRecovery {
         ConcurrentHashMap<String, Integer> ngramModel = new ConcurrentHashMap<String, Integer>();
         byte[] ciphertext = beam.getCipherText(10, stringCorpus);
         ngramModel = parse.processFiles(ngramModel, corpus, n);
-        HashMap<String, Double> languageModel = lm.createModel(ngramModel, stringCorpus);
+
+        ConcurrentHashMap<String, Double> languageModel = new ConcurrentHashMap<>(ngramModel.size());
+        Split makeModel = new Split(corpus, languageModel, n, true);
+        int noOfThreads = makeModel.getThreadNumber();
+        int modelChunkSize = makeModel.getNGramChunkNumber(noOfThreads);
+        System.out.println("chunk size: " + modelChunkSize);
+        languageModel = makeModel.processAllNGrams(noOfThreads, modelChunkSize);
 
         System.out.println("corpus length " + corpus.length());
         System.out.println("vocab size " + languageModel.size());

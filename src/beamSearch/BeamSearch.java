@@ -7,6 +7,7 @@ import languageModel.ParseCorpus;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -132,8 +133,7 @@ public class BeamSearch {
      * @param ciphertext    : The XOR of two ciphertexts, of which we are trying to recover the plaintexts.
      * @return candidates : The list of top candidate ciphertexts returned as a result of the algorithm.
      **/
-    public static ArrayList<Tuple> beamSearch(String corpus, Map<String, Integer> ngramModel, HashMap<String,
-            Double> languageModel, int n, int pruneNumber, byte[] ciphertext) {
+    public static ArrayList<Tuple> beamSearch(String corpus, Map<String, Integer> ngramModel, ConcurrentHashMap<String, Double> languageModel, int n, int pruneNumber, byte[] ciphertext) {
 
         /**
          Adding the log probability of the empty string to the language model.

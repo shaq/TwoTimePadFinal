@@ -85,8 +85,8 @@ public class ParseCorpus {
                 if (file.isFile()) {
                     Split split = new Split(file, languageModel, n);
                     int noThreads = split.getThreadNumber();
-                    long chunks = split.getChunkNumber(noThreads);
-                    split.processAll(noThreads, chunks);
+                    long chunks = split.getFileChunkNumber(noThreads);
+                    split.processAllCorpus(noThreads, chunks);
                 }
 
             }
@@ -94,8 +94,8 @@ public class ParseCorpus {
         } else {
             Split split = new Split(f, languageModel, n);
             int noThreads = split.getThreadNumber();
-            long chunks = split.getChunkNumber(noThreads);
-            split.processAll(noThreads, chunks);
+            long chunks = split.getFileChunkNumber(noThreads);
+            split.processAllCorpus(noThreads, chunks);
             return languageModel;
         }
 
