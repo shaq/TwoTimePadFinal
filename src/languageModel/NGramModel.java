@@ -4,6 +4,7 @@ import beamSearch.Tuple;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class NGramModel {
@@ -56,7 +57,7 @@ public class NGramModel {
 
     }
 
-    public Double laplaceSmoothing(HashMap<String, Integer> ngrams, String key, String corpus) {
+    public Double laplaceSmoothing(Map<String, Integer> ngrams, String key, String corpus) {
         // An iterator for the given HashMap.
         Iterator<Entry<String, Integer>> it = ngrams.entrySet().iterator();
 
@@ -99,7 +100,7 @@ public class NGramModel {
         return smoothingEstimate;
     }
 
-    public Double[] calculateCandidateProbability(int n, String corpus, HashMap<String, Integer> ngrams, HashMap<String,
+    public Double[] calculateCandidateProbability(int n, String corpus, Map<String, Integer> ngrams, HashMap<String,
             Double> languageModel, String plaintext_one, String plaintext_two,
                                                   Tuple candidate) {
 
