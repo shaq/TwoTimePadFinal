@@ -2,8 +2,8 @@ package languageModel;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -25,11 +25,12 @@ public class NGram {
     /**
      * A method to generate n-grams from a given corpus and store them within a HashMap.
      *
-     * @param text : The corpus to generate n-grams from.
-     * @param min  : Minimum length n-grams to be stored.
-     * @param max  : Maximum length n-grams to be stored.
+     * @param ngrams : A ConcurrentHashMap to store the n-grams.
+     * @param text   : The corpus to generate n-grams from.
+     * @param min    : Minimum length n-grams to be stored.
+     * @param max    : Maximum length n-grams to be stored.
      */
-    public void addNGrams(Map<String, Integer> ngrams, String text, final int min, final int max) {
+    public void addNGrams(ConcurrentHashMap<String, Integer> ngrams, String text, final int min, final int max) {
 //        ConcurrentHashMap<String, Integer> ngrams = new ConcurrentHashMap<String, Integer>();
 //        text = text.toLowerCase();
 
@@ -39,7 +40,7 @@ public class NGram {
                 if (ngrams.containsKey(ngram)) {
                     ngrams.put(ngram, ngrams.get(ngram) + 1);
                 } else {
-                    ngrams.put(ngram, 1);
+                    ngrams.putIfAbsent(ngram, 1);
                 }
             }
         }

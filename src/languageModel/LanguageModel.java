@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LanguageModel {
 
@@ -12,6 +13,7 @@ public class LanguageModel {
     final static NGram ngram = new NGram();
     final static NGramModel model = new NGramModel();
     public static String referenceText;
+    public static Split split = new Split();
 
     /**
      * A method that creates a n-gram language model from a given HashMap.
@@ -22,11 +24,12 @@ public class LanguageModel {
      * @return model : HashMap<String, Double> that is used to represent the language model.
      */
     public HashMap<String, Double> createModel(Map<String, Integer> ngrams, String corpus) {
+
         // An iterator for the given HashMap.
         Iterator<Entry<String, Integer>> it = ngrams.entrySet().iterator();
 
         // Creating a new HashMap to store the n-grams with their MLEs.
-        HashMap<String, Double> languageModel = new HashMap<String, Double>();
+        HashMap<String, Double> languageModel = new HashMap<>();
         Double probEstimate = 0.0;
 
         while (it.hasNext()) {
@@ -52,7 +55,7 @@ public class LanguageModel {
      */
     public HashMap<String, Double> generateLanguageModel(String corpus, int n) throws IOException {
 
-        HashMap<String, Integer> ngrams = new HashMap<String, Integer>();
+        ConcurrentHashMap<String, Integer> ngrams = new ConcurrentHashMap<String, Integer>();
         HashMap<String, Double> languageModel = new HashMap<String, Double>();
 
         // Getting the user selected corpus and storing it in a string.
