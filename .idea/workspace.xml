@@ -6,9 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c0c1d5a-889b-434d-a827-c22fbc9abf72" name="Default" comment="Most of the errors have been fixed. Noticed a significant speedup when generating n-grams. Can now generate for large n quickly with no problems. However, calculating the probabilities is still very slow. Will try and make this multi-threaded also.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/artifacts/TwoTimePad_jar.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
+    <list default="true" id="7c0c1d5a-889b-434d-a827-c22fbc9abf72" name="Default" comment="Added comments to almost all methods. Will continue to clean up all code. Now going to merge this branch back into master.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/TwoTimePad/beamSearch/BeamSearch$1.class" afterPath="$PROJECT_DIR$/out/production/TwoTimePad/beamSearch/BeamSearch$1.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/TwoTimePad/beamSearch/BeamSearch.class" afterPath="$PROJECT_DIR$/out/production/TwoTimePad/beamSearch/BeamSearch.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/TwoTimePad/beamSearch/PlaintextRecovery.class" afterPath="$PROJECT_DIR$/out/production/TwoTimePad/beamSearch/PlaintextRecovery.class" />
@@ -17,10 +15,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/TwoTimePad/languageModel/NGramModel.class" afterPath="$PROJECT_DIR$/out/production/TwoTimePad/languageModel/NGramModel.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/TwoTimePad/languageModelTests/TestLanguageModel.class" afterPath="$PROJECT_DIR$/out/production/TwoTimePad/languageModelTests/TestLanguageModel.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/beamSearch/BeamSearch.java" afterPath="$PROJECT_DIR$/src/beamSearch/BeamSearch.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java" afterPath="$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/languageModel/LanguageModel.java" afterPath="$PROJECT_DIR$/src/languageModel/LanguageModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/languageModel/NGramModel.java" afterPath="$PROJECT_DIR$/src/languageModel/NGramModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
     </list>
     <ignored path="TwoTimePad.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -52,10 +47,10 @@
         <entry file="file://$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="41" column="31" selection-start-line="41" selection-start-column="31" selection-end-line="41" selection-end-column="31" />
+              <caret line="40" column="31" selection-start-line="40" selection-start-column="31" selection-end-line="40" selection-end-column="31" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1707#1724#0" expanded="true" />
+                <element signature="e#1692#1709#0" expanded="true" />
+                <marker date="1457841478000" expanded="true" signature="1185:1317" placeholder="/**...*/" />
               </folding>
             </state>
           </provider>
@@ -124,8 +119,10 @@
         <entry file="file://$PROJECT_DIR$/src/languageModel/LanguageModel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="11" column="39" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
-              <folding />
+              <caret line="9" column="39" selection-start-line="9" selection-start-column="39" selection-end-line="9" selection-end-column="39" />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -143,7 +140,7 @@
       <file leaf-file-name="Split.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/languageModel/Split.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.0216606">
+            <state vertical-scroll-proportion="2.3496504">
               <caret line="112" column="0" selection-start-line="112" selection-start-column="0" selection-end-line="112" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -1034,7 +1031,7 @@
       <workItem from="1457578778610" duration="1814000" />
       <workItem from="1457580853732" duration="982000" />
       <workItem from="1457623949259" duration="12108000" />
-      <workItem from="1457736760586" duration="24245000" />
+      <workItem from="1457736760586" duration="24369000" />
     </task>
     <task id="LOCAL-00001" summary="Sharing the project from intellij using git as eclipse and svn no longer meets my needs.">
       <created>1457528948693</created>
@@ -1102,7 +1099,13 @@
       <option name="project" value="LOCAL" />
       <updated>1457838247566</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Added comments to almost all methods. Will continue to clean up all code. Now going to merge this branch back into master.">
+      <created>1457841506132</created>
+      <option name="number" value="00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1457841506132</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1139,7 +1142,7 @@
   </component>
   <component name="TimeTrackingManager">
     <option name="enabled" value="true" />
-    <option name="totallyTimeSpent" value="39149000" />
+    <option name="totallyTimeSpent" value="39273000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1916" height="1177" extended-state="6" />
@@ -1152,10 +1155,10 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22472924" sideWeight="0.5020877" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1155268" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22472924" sideWeight="0.49791232" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942238" sideWeight="0.49791232" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22472924" sideWeight="0.49791232" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32942238" sideWeight="0.49791232" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18841337" sideWeight="0.5" order="0" side_tool="true" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18841337" sideWeight="0.5" order="0" side_tool="true" content_ui="combo" />
       <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942238" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942238" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1197,7 +1200,8 @@
     <MESSAGE value="I now have a working project! It recovers the correct plaintext, however it has been tested on very small input. I will now be working to have generate my language model concurrently so that I can use larger values of n." />
     <MESSAGE value="Alot of errors but seems to have sped up. Will debug and clean up. Making use of ConcurrentHashMap instead of HashMap." />
     <MESSAGE value="Most of the errors have been fixed. Noticed a significant speedup when generating n-grams. Can now generate for large n quickly with no problems. However, calculating the probabilities is still very slow. Will try and make this multi-threaded also." />
-    <option name="LAST_COMMIT_MESSAGE" value="Most of the errors have been fixed. Noticed a significant speedup when generating n-grams. Can now generate for large n quickly with no problems. However, calculating the probabilities is still very slow. Will try and make this multi-threaded also." />
+    <MESSAGE value="Added comments to almost all methods. Will continue to clean up all code. Now going to merge this branch back into master." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added comments to almost all methods. Will continue to clean up all code. Now going to merge this branch back into master." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1216,7 +1220,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="49" column="73" selection-start-line="49" selection-start-column="73" selection-end-line="49" selection-end-column="73" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1279,8 +1285,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1707#1724#0" expanded="true" />
+            <element signature="e#1692#1709#0" expanded="true" />
+            <marker date="1457841478000" expanded="true" signature="1185:1317" placeholder="/**...*/" />
           </folding>
         </state>
       </provider>
@@ -1289,7 +1295,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="49" column="73" selection-start-line="49" selection-start-column="73" selection-end-line="49" selection-end-column="73" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1352,8 +1360,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="41" column="1" selection-start-line="41" selection-start-column="1" selection-end-line="41" selection-end-column="1" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1707#1724#0" expanded="true" />
+            <element signature="e#1692#1709#0" expanded="true" />
+            <marker date="1457841478000" expanded="true" signature="1185:1317" placeholder="/**...*/" />
           </folding>
         </state>
       </provider>
@@ -1362,7 +1370,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1382,8 +1392,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1707#1724#0" expanded="true" />
+            <element signature="e#1692#1709#0" expanded="true" />
+            <marker date="1457841478000" expanded="true" signature="1185:1317" placeholder="/**...*/" />
           </folding>
         </state>
       </provider>
@@ -1392,7 +1402,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="41" column="2" selection-start-line="41" selection-start-column="2" selection-end-line="41" selection-end-column="2" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1452,8 +1464,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1707#1724#0" expanded="true" />
+            <element signature="e#1692#1709#0" expanded="true" />
+            <marker date="1457841478000" expanded="true" signature="1185:1317" placeholder="/**...*/" />
           </folding>
         </state>
       </provider>
@@ -1462,7 +1474,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="41" column="2" selection-start-line="41" selection-start-column="2" selection-end-line="41" selection-end-column="2" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1771,10 +1785,10 @@
     <entry file="file://$PROJECT_DIR$/src/beamSearch/PlaintextRecovery.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="41" column="31" selection-start-line="41" selection-start-column="31" selection-end-line="41" selection-end-column="31" />
+          <caret line="40" column="31" selection-start-line="40" selection-start-column="31" selection-end-line="40" selection-end-column="31" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1707#1724#0" expanded="true" />
+            <element signature="e#1692#1709#0" expanded="true" />
+            <marker date="1457841478000" expanded="true" signature="1185:1317" placeholder="/**...*/" />
           </folding>
         </state>
       </provider>
@@ -1841,8 +1855,10 @@
     <entry file="file://$PROJECT_DIR$/src/languageModel/LanguageModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="39" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
-          <folding />
+          <caret line="9" column="39" selection-start-line="9" selection-start-column="39" selection-end-line="9" selection-end-column="39" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1986,7 +2002,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/languageModel/Split.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.0216606">
+        <state vertical-scroll-proportion="2.3496504">
           <caret line="112" column="0" selection-start-line="112" selection-start-column="0" selection-end-line="112" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
