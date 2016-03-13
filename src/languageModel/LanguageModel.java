@@ -1,18 +1,13 @@
 package languageModel;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class LanguageModel {
 
-    final static ParseCorpus parse = new ParseCorpus();
-    final static NGram ngram = new NGram();
     final static NGramModel model = new NGramModel();
-    public static String referenceText;
     public static Split split = new Split();
 
     /**
@@ -36,7 +31,7 @@ public class LanguageModel {
             Entry<String, Integer> entry = it.next();
             String ngram = entry.getKey().toString();
             probEstimate = model.laplaceSmoothing(ngrams, ngram, corpus);
-            System.out.println("probEstimate: " + probEstimate);
+//            System.out.println("probEstimate: " + probEstimate);
             Double negLogProb = Math.log(probEstimate);
             negLogProb *= -1;
 
@@ -45,30 +40,6 @@ public class LanguageModel {
         }
 
         return languageModel;
-    }
-
-    /**
-     * The main method that is used to Parse in a corpus and generates the language model using this.
-     *
-     * @return : The language model used to generate the corpus
-     * @throws IOException
-     */
-    public HashMap<String, Double> generateLanguageModel(String corpus, int n) throws IOException {
-
-        ConcurrentHashMap<String, Integer> ngrams = new ConcurrentHashMap<String, Integer>();
-        HashMap<String, Double> languageModel = new HashMap<String, Double>();
-
-        // Getting the user selected corpus and storing it in a string.
-        referenceText = corpus;
-
-        // Creating all n-grams of size from 1 to n, using the parsed corpus.
-        ngram.addNGrams(ngrams, referenceText, 1, n);
-
-        // Creating the language model (estimating all probabilities of n-grams created above).
-        languageModel = createModel(ngrams, corpus);
-
-        return languageModel;
-
     }
 
 }

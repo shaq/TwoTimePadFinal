@@ -100,7 +100,7 @@ public class NGramModel {
         return smoothingEstimate;
     }
 
-    public Double[] calculateCandidateProbability(int n, String corpus, HashMap<String, Integer> ngrams, HashMap<String,
+    public Double[] calculateCandidateProbability(int n, String corpus, Map<String, Integer> ngrams, HashMap<String,
             Double> languageModel, String plaintext_one, String plaintext_two,
                                                   Tuple candidate) {
 

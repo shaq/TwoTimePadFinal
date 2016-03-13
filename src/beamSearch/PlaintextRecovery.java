@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -30,33 +31,39 @@ public class PlaintextRecovery {
      *
      * @param candidates : The list of plaintext candidates to print.
      */
-    public static void recoverPlaintexts(ArrayList<Tuple> candidates) {
+    public static void getTopPlaintextCandidates(ArrayList<Tuple> candidates) {
         for (Tuple candidate : candidates) {
             System.out.println(candidate.toString());
         }
     }
 
+    /**
+     * Main method for testing.
+     *
+     * @param args
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
 
         File corpus = parse.getCorpus();
         InputStream is = new FileInputStream(corpus);
         String stringCorpus = split.fileToString(is);
         int n = parse.getN();
-//        int pruneNumber = 10;
+        int pruneNumber = 100;
         ConcurrentHashMap<String, Integer> ngramModel = new ConcurrentHashMap<String, Integer>();
-//        byte[] ciphertext = beam.getCipherText(10, corpus);
+        byte[] ciphertext = beam.getCipherText(10, stringCorpus);
         ngramModel = parse.processFiles(ngramModel, corpus, n);
-//        HashMap<String, Double> languageModel = lm.generateLanguageModel(stringCorpus, n);
+        HashMap<String, Double> languageModel = lm.createModel(ngramModel, stringCorpus);
 
-//        System.out.println("corpus length " + corpus.length());
-//        System.out.println("vocab size " + languageModel.size());
+        System.out.println("corpus length " + corpus.length());
+        System.out.println("vocab size " + languageModel.size());
         System.out.println(ngramModel);
-//        System.out.println(languageModel);
-//        languageModel.put("", Math.log(1.0));
-//        System.out.println("Log probability of the empty string = " + languageModel.get(""));
+        System.out.println(languageModel);
 
-//        ArrayList<Tuple> candidates = beam.beamSearch(corpus, ngramModel, languageModel, n, pruneNumber, ciphertext);
-//        recoverPlaintexts(candidates);
+        ArrayList<Tuple> candidates;
+        candidates = beam.beamSearch(stringCorpus, ngramModel, languageModel, n, pruneNumber, ciphertext);
+        getTopPlaintextCandidates(candidates);
 
     }
 

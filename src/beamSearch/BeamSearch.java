@@ -132,7 +132,7 @@ public class BeamSearch {
      * @param ciphertext    : The XOR of two ciphertexts, of which we are trying to recover the plaintexts.
      * @return candidates : The list of top candidate ciphertexts returned as a result of the algorithm.
      **/
-    public static ArrayList<Tuple> beamSearch(String corpus, HashMap<String, Integer> ngramModel, HashMap<String,
+    public static ArrayList<Tuple> beamSearch(String corpus, Map<String, Integer> ngramModel, HashMap<String,
             Double> languageModel, int n, int pruneNumber, byte[] ciphertext) {
 
         /**
@@ -141,25 +141,13 @@ public class BeamSearch {
          **/
         Double emptyStringProb = Math.log(1.0);
         languageModel.put("", emptyStringProb);
-        HashMap<String, Integer> ngrams = ngramModel;
+        Map<String, Integer> ngrams = ngramModel;
 
         // The two candidate strings to be used repeatedly in the algorithm.
-        String plaintext_one = "";
-        String plaintext_two = "";
+        String plaintext_one;
+        String plaintext_two;
         char p_one_next;
         char p_two_next;
-        Double cand_prob_one = 0.0;
-        Double cand_prob_two = 0.0;
-        Double p_one_prob = 0.0;
-        Double p_two_prob = 0.0;
-        Double p_one_nminus_prob = 0.0;
-        Double p_two_nminus_prob = 0.0;
-//        Double p_one_next_prob = 0.0;
-//        Double p_two_next_prob = 0.0;
-        String p_one_ngram = "";
-        String p_two_ngram = "";
-        String pOne_n_minus_one_gram = "";
-        String pTwo_n_minus_one_gram = "";
 
         /**
          The ArrayList to hold all the candidates of plaintexts.
@@ -184,15 +172,13 @@ public class BeamSearch {
 
                 Tuple t = (candidates.get(candNum));
 
-//                cand_prob_one = 0.0;
-//                cand_prob_two = 0.0;
 
                 // For every candidate in 'candidates' we extend by one 256 times. Once for each Ascii character.
                 // We then sort and keep the best 'pruneNumber' candidates before repeating.
                 for (int ascii = 0; ascii < printableAscii.length; ascii++) {
 
                     p_one_next = (char) printableAscii[ascii];
-//					System.out.println("1 next: " + (char)ascii);
+
                     /**
                      By using our character in p_one_next and the character at 'position' in the ciphertext, we can
                      obtain the unique candidate for p_two_next, since p_one_next XOR p_two_next must equal the
@@ -214,8 +200,6 @@ public class BeamSearch {
                     System.out.println("2: " + plaintext_two);
                     System.out.println("P2 = " + candProb[1]);
 
-
-//					System.out.println();
                     temp.add(new Tuple(plaintext_one, plaintext_two, candProb[0], candProb[1]));
 
                 }
@@ -235,8 +219,6 @@ public class BeamSearch {
             });
 
             Collections.reverse(temp);
-//            Collections.sort(temp, Collections.reverseOrder(new Tuple.TupleComparator()));
-
 //            System.out.println("++++++++++++++++++++ After sorting ++++++++++++++++++++\n" + temp);
             // Setting 'candidates' to be the top 'pruneNumber' plaintext candidates.
             temp = new ArrayList<Tuple>(temp.subList(0, pruneNumber));
