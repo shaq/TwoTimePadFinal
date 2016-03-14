@@ -3,100 +3,115 @@
   <ID>JAVA</ID>
   <OriginalElement>beamSearch</OriginalElement>
   <nodes>
-    <node x="346.51086956521743" y="23.0">languageModel.NGramModel</node>
-    <node x="552.9166666666666" y="190.5">languageModel.LanguageModel</node>
-    <node x="563.1666666666666" y="789.0">beamSearch.PlaintextRecovery</node>
-    <node x="101.66666666666663" y="179.0">beamSearch.Tuple</node>
-    <node x="0.0" y="11.5">languageModel.ParseCorpus</node>
-    <node x="873.5108695652175" y="0.0">languageModel.NGram</node>
-    <node x="338.16666666666663" y="424.0">beamSearch.BeamSearch</node>
+    <node x="82.16339285714298" y="256.5">languageModel.NGramModel</node>
+    <node x="529.413392857143" y="546.5">languageModel.LanguageModel</node>
+    <node x="696.0125" y="156.0">languageModel.Split</node>
+    <node x="807.5625000000001" y="1142.0">beamSearch.PlaintextRecovery</node>
+    <node x="102.41339285714298" y="502.0">beamSearch.Tuple</node>
+    <node x="847.9105654761908" y="0.0">languageModel.NGram</node>
+    <node x="773.0861607142858" y="524.0">languageModel.ParseCorpus</node>
+    <node x="59.0" y="767.0">beamSearch.BeamSearch</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="languageModel.LanguageModel" target="languageModel.ParseCorpus">
-      <point x="-67.0" y="-81.0" />
-      <point x="619.9166666666666" y="139.0" />
-      <point x="205.33333333333337" y="139.0" />
-      <point x="93.33333333333337" y="48.0" />
-    </edge>
-    <edge source="languageModel.LanguageModel" target="languageModel.NGramModel">
-      <point x="-22.333333333333258" y="-81.0" />
-      <point x="664.5833333333334" y="159.0" />
-      <point x="663.3858695652175" y="159.0" />
-      <point x="63.375" y="36.5" />
+    <edge source="languageModel.ParseCorpus" target="languageModel.Split">
+      <point x="0.0" y="-70.5" />
+      <point x="905.0861607142858" y="482.0" />
+      <point x="875.5125" y="482.0" />
+      <point x="2.8421709430404007E-14" y="148.0" />
     </edge>
     <edge source="beamSearch.PlaintextRecovery" target="languageModel.LanguageModel">
-      <point x="16.5" y="-81.0" />
-      <point x="711.6666666666666" y="739.0" />
-      <point x="777.5724637681159" y="739.0" />
-      <point x="777.5724637681159" y="384.0" />
-      <point x="720.4166666666666" y="384.0" />
-      <point x="33.5" y="81.0" />
+      <point x="-71.0" y="-92.0" />
+      <point x="878.5625000000001" y="1102.0" />
+      <point x="685.913392857143" y="1102.0" />
+      <point x="685.913392857143" y="727.0" />
+      <point x="664.413392857143" y="727.0" />
+      <point x="27.0" y="48.0" />
     </edge>
     <edge source="beamSearch.BeamSearch" target="languageModel.NGram">
-      <point x="170.66666666666663" y="-147.5" />
-      <point x="700.8333333333333" y="404.0" />
-      <point x="970.9474637681159" y="404.0" />
-      <point x="13.916666666666629" y="59.5" />
-    </edge>
-    <edge source="beamSearch.BeamSearch" target="beamSearch.Tuple">
-      <point x="-85.33333333333326" y="-147.5" />
-      <point x="444.83333333333337" y="384.0" />
-      <point x="305.16666666666663" y="384.0" />
-      <point x="0.0" y="92.5" />
+      <point x="-127.99999999999989" y="-147.5" />
+      <point x="123.00000000000011" y="737.0" />
+      <point x="15.0" y="737.0" />
+      <point x="15.0" y="126.0" />
+      <point x="884.6605654761908" y="126.0" />
+      <point x="-36.75" y="48.0" />
     </edge>
     <edge source="beamSearch.BeamSearch" target="languageModel.LanguageModel">
-      <point x="42.66666666666674" y="-147.5" />
-      <point x="572.8333333333334" y="404.0" />
-      <point x="586.4166666666666" y="404.0" />
-      <point x="-100.5" y="81.0" />
+      <point x="85.33333333333337" y="-147.5" />
+      <point x="336.33333333333337" y="727.0" />
+      <point x="610.413392857143" y="727.0" />
+      <point x="-27.0" y="48.0" />
+    </edge>
+    <edge source="beamSearch.PlaintextRecovery" target="languageModel.Split">
+      <point x="42.60000000000002" y="-92.0" />
+      <point x="992.1625000000001" y="1092.0" />
+      <point x="1060.3361607142858" y="1092.0" />
+      <point x="1060.3361607142858" y="482.0" />
+      <point x="947.3125000000001" y="482.0" />
+      <point x="71.80000000000007" y="148.0" />
     </edge>
     <edge source="beamSearch.BeamSearch" target="languageModel.ParseCorpus">
-      <point x="-127.99999999999989" y="-147.5" />
-      <point x="402.16666666666674" y="394.0" />
-      <point x="91.16666666666663" y="394.0" />
-      <point x="91.16666666666663" y="159.0" />
-      <point x="130.66666666666663" y="159.0" />
-      <point x="18.66666666666663" y="48.0" />
+      <point x="128.0" y="-147.5" />
+      <point x="379.0" y="737.0" />
+      <point x="806.0861607142858" y="737.0" />
+      <point x="-99.0" y="70.5" />
     </edge>
-    <edge source="languageModel.LanguageModel" target="languageModel.NGram">
-      <point x="67.0" y="-81.0" />
-      <point x="753.9166666666666" y="149.0" />
-      <point x="887.4275362318841" y="149.0" />
-      <point x="-69.58333333333331" y="59.5" />
+    <edge source="languageModel.LanguageModel" target="languageModel.Split">
+      <point x="81.0" y="-48.0" />
+      <point x="718.413392857143" y="482.0" />
+      <point x="803.7125000000001" y="482.0" />
+      <point x="-71.79999999999998" y="148.0" />
+    </edge>
+    <edge source="beamSearch.PlaintextRecovery" target="languageModel.ParseCorpus">
+      <point x="-14.200000000000045" y="-92.0" />
+      <point x="935.3625000000001" y="1122.0" />
+      <point x="957.913392857143" y="1122.0" />
+      <point x="957.913392857143" y="747.0" />
+      <point x="938.0861607142858" y="747.0" />
+      <point x="33.0" y="70.5" />
+    </edge>
+    <edge source="languageModel.LanguageModel" target="languageModel.NGramModel">
+      <point x="-81.0" y="-48.0" />
+      <point x="556.413392857143" y="482.0" />
+      <point x="411.538392857143" y="482.0" />
+      <point x="65.875" y="47.5" />
+    </edge>
+    <edge source="beamSearch.BeamSearch" target="beamSearch.Tuple">
+      <point x="0.0" y="-147.5" />
+      <point x="251.0" y="707.0" />
+      <point x="305.913392857143" y="707.0" />
+      <point x="0.0" y="92.5" />
+    </edge>
+    <edge source="languageModel.Split" target="languageModel.NGram">
+      <point x="-89.75" y="-148.0" />
+      <point x="785.7625" y="136.0" />
+      <point x="909.1605654761908" y="136.0" />
+      <point x="-12.25" y="48.0" />
     </edge>
     <edge source="beamSearch.PlaintextRecovery" target="languageModel.NGram">
-      <point x="82.5" y="-81.0" />
-      <point x="777.6666666666666" y="759.0" />
-      <point x="994.927536231884" y="759.0" />
-      <point x="994.927536231884" y="159.0" />
-      <point x="998.7608695652175" y="159.0" />
-      <point x="41.75" y="59.5" />
+      <point x="99.39999999999998" y="-92.0" />
+      <point x="1048.9625" y="1112.0" />
+      <point x="1082.3361607142858" y="1112.0" />
+      <point x="1082.3361607142858" y="126.0" />
+      <point x="958.1605654761908" y="126.0" />
+      <point x="36.75000000000003" y="48.0" />
     </edge>
     <edge source="beamSearch.BeamSearch" target="languageModel.NGramModel">
       <point x="-42.66666666666663" y="-147.5" />
-      <point x="487.5" y="404.0" />
-      <point x="519.1666666666666" y="404.0" />
-      <point x="519.1666666666666" y="159.0" />
-      <point x="409.88586956521743" y="159.0" />
-      <point x="-190.125" y="36.5" />
+      <point x="208.33333333333337" y="717.0" />
+      <point x="91.91339285714298" y="717.0" />
+      <point x="91.91339285714298" y="482.0" />
+      <point x="279.788392857143" y="482.0" />
+      <point x="-65.875" y="47.5" />
     </edge>
     <edge source="beamSearch.PlaintextRecovery" target="beamSearch.BeamSearch">
-      <point x="-49.5" y="-81.0" />
-      <point x="645.6666666666666" y="749.0" />
-      <point x="434.16666666666663" y="749.0" />
-      <point x="-96.0" y="147.5" />
-    </edge>
-    <edge source="beamSearch.PlaintextRecovery" target="languageModel.ParseCorpus">
-      <point x="-82.5" y="-81.0" />
-      <point x="612.6666666666666" y="759.0" />
-      <point x="69.16666666666663" y="759.0" />
-      <point x="69.16666666666663" y="149.0" />
-      <point x="56.0" y="149.0" />
-      <point x="-56.0" y="48.0" />
+      <point x="-99.40000000000009" y="-92.0" />
+      <point x="850.1625" y="1112.0" />
+      <point x="347.0" y="1112.0" />
+      <point x="96.0" y="147.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="520.5" y="475.5" />
+  <settings layout="Hierarchic Group" zoom="0.5973254086181278" x="554.5" y="663.0" />
   <SelectedNodes />
   <Categories>
     <Category>Fields</Category>
