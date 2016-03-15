@@ -6,10 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * A class that splits files up into chunks then processes them chunk by chunk to generate n-grams.
@@ -88,19 +85,19 @@ public class Split {
      * @param end   : The end of the chunk to be processed.
      * @return : An informative message about the status of the file.
      */
-    public String processPart(long start, long end) throws Exception {
+    public ConcurrentHashMap<String, Integer> processPart(long start, long end) throws Exception {
         InputStream is = new FileInputStream(file);
         is.skip(start);
 
         String text = fileToString(is);
-
-        ngram.addNGrams(languageModel, text, 1, n);
+        ConcurrentHashMap<String, Integer> ngrams = new ConcurrentHashMap<>();
+        ngram.addNGrams(ngrams, text, 1, n);
         System.out.println("Computing the part from " + start + " to " + end);
         Thread.sleep(1000);
         System.out.println("Finished the part from " + start + " to " + end);
 
         is.close();
-        return "Chunk closed";
+        return ngrams;
     }
 
     /**
@@ -108,9 +105,9 @@ public class Split {
      *
      * @return : The task that is created.
      */
-    public Callable<String> processPartTask(final long start, final long end) {
-        return new Callable<String>() {
-            public String call()
+    public Callable<ConcurrentHashMap<String, Integer>> processPartTask(final long start, final long end) {
+        return new Callable<ConcurrentHashMap<String, Integer>>() {
+            public ConcurrentHashMap<String, Integer> call()
                     throws Exception {
                 return processPart(start, end);
             }
@@ -127,16 +124,26 @@ public class Split {
      * @return : A ConcurrentHashMap containing all the n-grams for the given file, along with their counts.
      * @throws InterruptedException
      */
-    public ConcurrentHashMap<String, Integer> processAll(int noOfThreads, long chunkSize) throws InterruptedException {
+    public ConcurrentHashMap<String, Integer> processAll(int noOfThreads, long chunkSize) throws InterruptedException,
+            ExecutionException {
         int count = (int) ((file.length() + chunkSize - 1) / chunkSize);
-        List<Callable<String>> tasks = new ArrayList<Callable<String>>(count);
+        List<Callable<ConcurrentHashMap<String, Integer>>> tasks = new ArrayList<>(count);
         for (int i = 0; i < count; i++)
             tasks.add(processPartTask(i * chunkSize, Math.min(file.length(), (i + 1) * chunkSize)));
         ExecutorService es = Executors.newFixedThreadPool(noOfThreads);
 
-        es.invokeAll(tasks);
+        List<Future<ConcurrentHashMap<String, Integer>>> results = es.invokeAll(tasks);
+        ArrayList<ConcurrentHashMap<String, Integer>> list = new ArrayList<>();
         es.shutdown();
+
+
+        for(Future<ConcurrentHashMap<String, Integer>> result : results){
+            list.add(result.get());
+        }
+
+        languageModel.putAll(list.get(0));
         return languageModel;
+
     }
 
 

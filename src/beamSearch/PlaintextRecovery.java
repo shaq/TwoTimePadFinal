@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A class that recovers the plaintexts using methods from 'BeamSearch' and 'LanguageModel'.
@@ -44,7 +45,7 @@ public class PlaintextRecovery {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
 
         File corpus = parse.getCorpus();
         InputStream is = new FileInputStream(corpus);
@@ -53,7 +54,7 @@ public class PlaintextRecovery {
         int pruneNumber = 100;
         ConcurrentHashMap<String, Integer> ngramModel = new ConcurrentHashMap<String, Integer>();
         byte[] ciphertext = beam.getCipherText(10, stringCorpus);
-        ngramModel = parse.processFiles(ngramModel, corpus, n);
+        ngramModel = parse.processFiles(corpus, n);
         HashMap<String, Double> languageModel = lm.createModel(ngramModel, stringCorpus);
 
         System.out.println("corpus length " + corpus.length());

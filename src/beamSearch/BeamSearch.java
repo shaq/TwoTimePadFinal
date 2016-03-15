@@ -19,7 +19,7 @@ public class BeamSearch {
 
     private static final int ASCII_LENGTH = 256;
 
-    // Creating an array that will hold asci codes for all printable english ascii characters.
+    // Creating an array that will hold ascii codes for all printable english ascii characters.
     private static int[] printableAscii = new int[96];
     private static ParseCorpus parse = new ParseCorpus();
     private static LanguageModel lm = new LanguageModel();
@@ -132,7 +132,7 @@ public class BeamSearch {
      * @param ciphertext    : The XOR of two ciphertexts, of which we are trying to recover the plaintexts.
      * @return candidates : The list of top candidate ciphertexts returned as a result of the algorithm.
      **/
-    public static ArrayList<Tuple> beamSearch(String corpus, Map<String, Integer> ngramModel, HashMap<String,
+    public ArrayList<Tuple> beamSearch(String corpus, Map<String, Integer> ngramModel, HashMap<String,
             Double> languageModel, int n, int pruneNumber, byte[] ciphertext) {
 
         /**

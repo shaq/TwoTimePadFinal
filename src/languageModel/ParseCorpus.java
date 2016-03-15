@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A class that allows a user to select the file they want to parse,
@@ -68,10 +69,9 @@ public class ParseCorpus {
      * @return The processed n-grams stored in a ConcurrentHashMap
      * @throws IOException, InterruptedException
      */
-    public ConcurrentHashMap<String, Integer> processFiles(ConcurrentHashMap<String, Integer> languageModel, File f,
-                                                           int n)
-            throws IOException, InterruptedException {
+    public ConcurrentHashMap<String, Integer> processFiles(File f, int n) throws IOException, InterruptedException, ExecutionException {
 
+        ConcurrentHashMap<String, Integer> languageModel = new ConcurrentHashMap<>();
         if (f.isDirectory()) {
 
             File[] filesInDirectory = chooser.getSelectedFile().listFiles();

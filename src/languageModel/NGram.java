@@ -30,9 +30,7 @@ public class NGram {
      * @param min    : Minimum length n-grams to be stored.
      * @param max    : Maximum length n-grams to be stored.
      */
-    public void addNGrams(ConcurrentHashMap<String, Integer> ngrams, String text, final int min, final int max) {
-//        ConcurrentHashMap<String, Integer> ngrams = new ConcurrentHashMap<String, Integer>();
-//        text = text.toLowerCase();
+    public ConcurrentHashMap<String, Integer> addNGrams(ConcurrentHashMap<String, Integer> ngrams, String text, final int min, final int max) {
 
         for (int i = min; i < max + 1; i++) {
             for (int j = 0; i + j - 1 < text.length(); j++) {
@@ -42,9 +40,10 @@ public class NGram {
                 } else {
                     ngrams.putIfAbsent(ngram, 1);
                 }
+
             }
         }
-
+        return ngrams;
     }
 
     /**
