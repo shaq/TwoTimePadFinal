@@ -36,11 +36,11 @@ public class Split {
         this.n = n;
     }
 
-    public List<ConcurrentHashMap<String, Integer>> splitMap(Map<String, Integer> map, int n){
+    public ConcurrentHashMap<String, Integer>[] splitMap(Map<String, Integer> map, int n){
 
-        List<ConcurrentHashMap<String, Integer>> mapList = new ArrayList<>();
+        ConcurrentHashMap<String, Integer>[] mapArr = new ConcurrentHashMap[n];
         for (int i = 0; i < n; i++) {
-            mapList.add(new ConcurrentHashMap<>());
+            mapArr[i] = new ConcurrentHashMap<>();
         }
 
         Set<Map.Entry<String, Integer>> entries = map.entrySet();
@@ -49,18 +49,18 @@ public class Split {
             int entryLength = entry.getKey().length();
             String key = entry.getKey();
             Integer val = entry.getValue();
-            ConcurrentHashMap<String, Integer> tmpMap = mapList.get(entryLength - 1);
+            ConcurrentHashMap<String, Integer> tmpMap = mapArr[entryLength - 1];
             tmpMap.put(key, val);
-            mapList.set(entryLength - 1, tmpMap);
+            mapArr[entryLength - 1] = tmpMap;
         }
 
-        return mapList;
+        return mapArr;
     }
 
-    public void mapListToString(List<ConcurrentHashMap<String, Integer>> mapList){
-        for (int map = 0; map < mapList.size() ; map++) {
+    public void mapArrToString(ConcurrentHashMap<String, Integer>[] mapArr){
+        for (int map = 0; map < mapArr.length ; map++) {
             int n = map + 1;
-            System.out.println(n + "-grams: \n" + mapList.get(map));
+            System.out.println(n + "-grams: \n" + mapArr[map]);
         }
     }
 

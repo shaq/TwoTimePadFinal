@@ -56,7 +56,7 @@ public class PlaintextRecovery {
         ConcurrentHashMap<String, Integer> ngramModel;
         byte[] ciphertext = beam.getCipherText(10, stringCorpus);
         ngramModel = parse.processFiles(corpus, n);
-        List<ConcurrentHashMap<String, Integer>> mapList = split.splitMap(ngramModel, n);
+        ConcurrentHashMap<String, Integer>[] mapArr = split.splitMap(ngramModel, n);
 //        HashMap<String, Double> languageModel = lm.createModel(ngramModel, stringCorpus);
 
         System.out.println("corpus length " + corpus.length());
