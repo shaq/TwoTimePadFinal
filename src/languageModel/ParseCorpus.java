@@ -69,7 +69,8 @@ public class ParseCorpus {
      * @return The processed n-grams stored in a ConcurrentHashMap
      * @throws IOException, InterruptedException
      */
-    public ConcurrentHashMap<String, Integer> processFiles(File f, int n) throws IOException, InterruptedException, ExecutionException {
+    public ConcurrentHashMap<String, Integer> processFiles(File f, int n) throws IOException, InterruptedException,
+            ExecutionException {
 
         ConcurrentHashMap<String, Integer> languageModel = new ConcurrentHashMap<>();
         if (f.isDirectory()) {

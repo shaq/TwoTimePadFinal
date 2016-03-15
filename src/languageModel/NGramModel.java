@@ -144,14 +144,16 @@ public class NGramModel {
 
         }
 
-        if (!languageModel.containsKey(pOne_n_minus_one_gram) && !languageModel.containsKey(pTwo_n_minus_one_gram)) {
+        if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
+                !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
             p_one_prob = Math.log(laplaceSmoothing(ngrams, p_one_ngram, corpus));
             p_two_prob = Math.log(laplaceSmoothing(ngrams, p_two_ngram, corpus));
             p_one_nminus_prob = Math.log(laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus));
             p_two_nminus_prob = Math.log(laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus));
             System.out.println("both not in lm");
-        } else if (!languageModel.containsKey(pOne_n_minus_one_gram) && languageModel.containsKey(pTwo_n_minus_one_gram)) {
+        } else if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
+                languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
             p_one_prob = Math.log(laplaceSmoothing(ngrams, p_one_ngram, corpus));
             p_one_nminus_prob = Math.log(laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus));
@@ -164,7 +166,8 @@ public class NGramModel {
             }
 
             System.out.println("p1 not in lm");
-        } else if (languageModel.containsKey(pOne_n_minus_one_gram) && !languageModel.containsKey(pTwo_n_minus_one_gram)) {
+        } else if (languageModel.containsKey(pOne_n_minus_one_gram) &&
+                !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
             p_two_prob = Math.log(laplaceSmoothing(ngrams, p_two_ngram, corpus));
             p_two_nminus_prob = Math.log(laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus));

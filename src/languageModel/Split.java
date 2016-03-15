@@ -65,6 +65,12 @@ public class Split {
         return this.file.length() / noThreads;
     }
 
+    /**
+     * Converts an input stream to String.
+     * @param is
+     * @return The converted String.
+     * @throws IOException
+     */
     public String fileToString(InputStream is) throws IOException {
         StringBuilder builder;
         builder = new StringBuilder();
@@ -83,7 +89,7 @@ public class Split {
      *
      * @param start : The start of the chunk to be processed.
      * @param end   : The end of the chunk to be processed.
-     * @return : An informative message about the status of the file.
+     * @return : A HashMap containing ngrams and counts for the part processed.
      */
     public ConcurrentHashMap<String, Integer> processPart(long start, long end) throws Exception {
         InputStream is = new FileInputStream(file);
@@ -117,7 +123,10 @@ public class Split {
 
     /**
      * A method that splits a file up into given chunks.
-     * It will then process each chunk in parallel using the given number of threads.splir
+     * It will then process each chunk in parallel using the given number of threads.
+     * Each thread will create a HashMap for the chunk that was just processed.
+     * The first thread that is created will hold the consolidated counts of all ngrams in the corpus, which is
+     * then returned.
      *
      * @param noOfThreads : The number of threads to be run in parallel
      * @param chunkSize   : The chunk size that each thread will process
