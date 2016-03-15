@@ -200,13 +200,8 @@ public class NGramModel {
             System.out.println("both in lm");
         }
 
-//        if(p_length > 1){
         cand_prob_one = candidate.getPercentageOne() + p_one_prob - p_one_nminus_prob;
         cand_prob_two = candidate.getPercentageTwo() + p_two_prob - p_two_nminus_prob;
-/*        } else {
-            cand_prob_one = candidate.getPercentageOne() + p_one_prob;
-            cand_prob_two = candidate.getPercentageTwo() + p_two_prob;
-        }*/
 
         return new Double[]{cand_prob_one, cand_prob_two};
     }
