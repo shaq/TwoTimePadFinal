@@ -57,7 +57,22 @@ public class Split {
         return mapArr;
     }
 
-    public void mapArrToString(ConcurrentHashMap<String, Integer>[] mapArr){
+    public Map<String, Integer> getMap(Map<String, Integer>[] mapArr, int keyLength){
+        Map<String, Integer> newMap = new ConcurrentHashMap<>();
+        int n_minus_map_index;
+        if(keyLength == 1) {
+            n_minus_map_index = keyLength - 1;
+        }else{
+            n_minus_map_index = keyLength - 2;
+        }
+        for (int map = n_minus_map_index; map < keyLength; map++) {
+            newMap.putAll(mapArr[map]);
+        }
+
+        return newMap;
+    }
+
+    public void mapArrToString(Map<String, Integer>[] mapArr){
         for (int map = 0; map < mapArr.length ; map++) {
             int n = map + 1;
             System.out.println(n + "-grams: \n" + mapArr[map]);

@@ -125,14 +125,14 @@ public class BeamSearch {
      * of ciphertexts.
      *
      * @param corpus        : The corpus used to build language models and used in smoothing.
-     * @param ngramModel    : A HashMap containing all ngrams for given corpus, to be used in smoothing.
+     * @param ngramArr    : A HashMap containing all ngrams for given corpus, to be used in smoothing.
      * @param languageModel : The language model containing the probability of all ngrams from a corpus.
      * @param n             : The maximum size of ngrams to be stored in the language model.
      * @param pruneNumber   : The number to prune each subsequent candidate list down to.
      * @param ciphertext    : The XOR of two ciphertexts, of which we are trying to recover the plaintexts.
      * @return candidates : The list of top candidate ciphertexts returned as a result of the algorithm.
      **/
-    public ArrayList<Tuple> beamSearch(String corpus, Map<String, Integer> ngramModel, HashMap<String,
+    public ArrayList<Tuple> beamSearch(String corpus, Map<String, Integer>[] ngramArr, HashMap<String,
             Double> languageModel, int n, int pruneNumber, byte[] ciphertext) {
 
         /**
@@ -141,7 +141,7 @@ public class BeamSearch {
          **/
         Double emptyStringProb = Math.log(1.0);
         languageModel.put("", emptyStringProb);
-        Map<String, Integer> ngrams = ngramModel;
+//        Map<String, Integer> ngrams = ngramArr;
 
         // The two candidate strings to be used repeatedly in the algorithm.
         String plaintext_one;
@@ -191,9 +191,10 @@ public class BeamSearch {
                     plaintext_two = t.getPlaintextTwo() + p_two_next;
 
 
-                    Double[] candProb = model.calculateCandidateProbability(n, corpus, ngrams, languageModel,
+                    Double[] candProb = model.calculateCandidateProbability(n, corpus, ngramArr, languageModel,
                             plaintext_one, plaintext_two, t);
 
+//                    System.out.println("p_length: " + plaintext_one.length());
                     System.out.println("1: " + plaintext_one);
                     System.out.println("P1 = " + candProb[0]);
 
@@ -219,7 +220,7 @@ public class BeamSearch {
             });
 
             Collections.reverse(temp);
-//            System.out.println("++++++++++++++++++++ After sorting ++++++++++++++++++++\n" + temp);
+            System.out.println("++++++++++++++++++++ After sorting ++++++++++++++++++++\n" + temp);
             // Setting 'candidates' to be the top 'pruneNumber' plaintext candidates.
             temp = new ArrayList<Tuple>(temp.subList(0, pruneNumber));
 

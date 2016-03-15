@@ -57,17 +57,17 @@ public class PlaintextRecovery {
         byte[] ciphertext = beam.getCipherText(10, stringCorpus);
         ngramModel = parse.processFiles(corpus, n);
         ConcurrentHashMap<String, Integer>[] mapArr = split.splitMap(ngramModel, n);
-//        HashMap<String, Double> languageModel = lm.createModel(ngramModel, stringCorpus);
+        HashMap<String, Double> languageModel = lm.createModel(mapArr, stringCorpus);
 
         System.out.println("corpus length " + corpus.length());
 //        System.out.println("vocab size " + languageModel.size());
-        System.out.println(ngramModel);
-//        split.mapListToString(split.splitMap(ngramModel, n));
+//        System.out.println(ngramModel);
+        split.mapArrToString(mapArr);
 //        System.out.println(languageModel);
 
-        /*ArrayList<Tuple> candidates;
-        candidates = beam.beamSearch(stringCorpus, ngramModel, languageModel, n, pruneNumber, ciphertext);
-        getTopPlaintextCandidates(candidates);*/
+        ArrayList<Tuple> candidates;
+        candidates = beam.beamSearch(stringCorpus, mapArr, languageModel, n, pruneNumber, ciphertext);
+        getTopPlaintextCandidates(candidates);
 
     }
 
