@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -52,19 +53,21 @@ public class PlaintextRecovery {
         String stringCorpus = split.fileToString(is);
         int n = parse.getN();
         int pruneNumber = 100;
-        ConcurrentHashMap<String, Integer> ngramModel = new ConcurrentHashMap<String, Integer>();
+        ConcurrentHashMap<String, Integer> ngramModel;
         byte[] ciphertext = beam.getCipherText(10, stringCorpus);
         ngramModel = parse.processFiles(corpus, n);
-        HashMap<String, Double> languageModel = lm.createModel(ngramModel, stringCorpus);
+        List<ConcurrentHashMap<String, Integer>> mapList = split.splitMap(ngramModel, n);
+//        HashMap<String, Double> languageModel = lm.createModel(ngramModel, stringCorpus);
 
         System.out.println("corpus length " + corpus.length());
-        System.out.println("vocab size " + languageModel.size());
+//        System.out.println("vocab size " + languageModel.size());
         System.out.println(ngramModel);
-        System.out.println(languageModel);
+//        split.mapListToString(split.splitMap(ngramModel, n));
+//        System.out.println(languageModel);
 
-        ArrayList<Tuple> candidates;
+        /*ArrayList<Tuple> candidates;
         candidates = beam.beamSearch(stringCorpus, ngramModel, languageModel, n, pruneNumber, ciphertext);
-        getTopPlaintextCandidates(candidates);
+        getTopPlaintextCandidates(candidates);*/
 
     }
 

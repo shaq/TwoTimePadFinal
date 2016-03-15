@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -35,6 +34,34 @@ public class Split {
         this.file = file;
         this.languageModel = languageModel;
         this.n = n;
+    }
+
+    public List<ConcurrentHashMap<String, Integer>> splitMap(Map<String, Integer> map, int n){
+
+        List<ConcurrentHashMap<String, Integer>> mapList = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            mapList.add(new ConcurrentHashMap<>());
+        }
+
+        Set<Map.Entry<String, Integer>> entries = map.entrySet();
+
+        for (Map.Entry<String, Integer> entry : entries) {
+            int entryLength = entry.getKey().length();
+            String key = entry.getKey();
+            Integer val = entry.getValue();
+            ConcurrentHashMap<String, Integer> tmpMap = mapList.get(entryLength - 1);
+            tmpMap.put(key, val);
+            mapList.set(entryLength - 1, tmpMap);
+        }
+
+        return mapList;
+    }
+
+    public void mapListToString(List<ConcurrentHashMap<String, Integer>> mapList){
+        for (int map = 0; map < mapList.size() ; map++) {
+            int n = map + 1;
+            System.out.println(n + "-grams: \n" + mapList.get(map));
+        }
     }
 
     /**
