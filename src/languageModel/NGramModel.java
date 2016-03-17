@@ -1,15 +1,17 @@
 package languageModel;
 
 import beamSearch.Tuple;
-import com.sun.tools.corba.se.idl.InterfaceGen;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class NGramModel {
 
+    /**
+     * A method that gets the size of the vocabulary for a given language model (the number of ngrams).
+     * @param mapArr : An array of Maps containing all n-grams for a given corpus.
+     * @return : The vocab size.
+     */
     public int getVocabSize(Map<String, Integer>[] mapArr){
         int vocabSize = 0;
         for(Map<String, Integer> m : mapArr){
@@ -20,56 +22,24 @@ public class NGramModel {
     }
 
     /**
-     * A method to estimate the Maximum Likelihood Probability (MLE) for a given n-gram
      *
-     * @param ngrams : The container where the given n-gram resides.
-     * @param key    : The n-gram we are trying to calculate to probability for.
-     * @return nGramMLE : The log probability of the given n-gram.
+     * @return : returns a really small (1 x10^(-7)) probability to unseen events. This is needed since
+     * laplace smoothing gives too much probability to unseen events.
      */
-    public Double estimateProbability(HashMap<String, Integer> ngrams, String key, String corpus) {
-
-
-        // An iterator for the given HashMap.
-        Iterator<Entry<String, Integer>> it = ngrams.entrySet().iterator();
-
-        Integer beginIndex = 0;
-        String denom = key.substring(beginIndex, key.length() - 1);
-        Double nGramMLE;
-        Integer keyLength = key.length();
-        Integer keyCount = ngrams.get(key);
-        Integer corpusLength = corpus.length();
-        Double denomCount = 0.0;
-
-        if (keyLength > 1) {
-
-            while (it.hasNext()) {
-                Entry<String, Integer> entry = it.next();
-                String ngram = entry.getKey();
-
-                // If the key at the current index of the HashMap == the (n-1)-gram of 'key'
-                // iterate the counter 'denomCount'
-                if (ngram.startsWith(denom)) {
-                    ++denomCount;
-                }
-            }
-
-            // Calculate the MLE for the given n-gram 'key' as` a log probability.
-            // (count of given n-gram ) / (count of (n-1)-grams for given n-gram)
-            nGramMLE = (keyCount / denomCount);
-
-        } else {
-
-            // Calculate the MLE for the given n-gram 'key' as a log probability.
-            nGramMLE = (keyCount / corpusLength.doubleValue());
-        }
-
+    public Double estimateProbability(Map<String, Integer>[] mapArr, String key, String corpus, int vocabSize) {
+        Double nGramMLE = 0.0000001;
         return nGramMLE;
-
     }
 
+    /**
+     * A method that implements laplace smoothing.
+     * @param mapArr : An array of maps containing n-grams.
+     * @param key : The n-grams to find the probability of.
+     * @param corpus : The corpus containing the ng-rams.
+     * @param vocabSize : The number of all n-grams obtained from the corpus.
+     * @return : A Double value representing the probability of the given n-gram.
+     */
     public Double laplaceSmoothing(Map<String, Integer>[] mapArr, String key, String corpus, int vocabSize) {
-//         An iterator for the given HashMap.
-//        Iterator<Entry<String, Integer>> it = ngrams.entrySet().iterator();
 
         Double smoothingEstimate = 0.0;
         Integer keyLength = key.length();
@@ -78,10 +48,8 @@ public class NGramModel {
         String denom = key.substring(0, key.length() - 1);
         int mapIndex = keyLength - 1;
 
-        // Map containing all n-grams with length == keyLength from given corpus.
+        // Map containing all n-grams with length == keyLength from corpus.
         Map<String, Integer> ngrams = mapArr[mapIndex];
-
-
 
         if (ngrams.containsKey(key)) {
             keyCount = ngrams.get(key);
@@ -99,28 +67,11 @@ public class NGramModel {
                 denomCount = 0;
             }
 
-            /*System.out.println("vocabSize: " + vocabSize);
-            System.out.println("keyCount: " + keyCount);
-            System.out.println("denomCount: " + denomCount);*/
-
-//            while (it.hasNext()) {
-//                Entry<String, Integer> entry = it.next();
-//                String ngram = entry.getKey();
-//                String denom = key.substring(0, key.length() - 1);
-
-                // If the key at the current index of the HashMap == the (n-1)-gram of 'key'
-                // iterate the counter 'denomCount'
-                /*if (ngram.equals(denom)) {
-                    ++denomCount;
-                }*/
-//            }
-
             // Calculate the smoothing estimate for the given n-gram 'key' as a log probability.
             // (count of given n-gram ) + 1 / (count of (n-1)-grams for given n-gram) + Vocabulary size
             smoothingEstimate = (1.0 + keyCount) / (denomCount + vocabSize);
 
         } else {
-
 
             // Calculate the smoothing estimate for the given n-gram 'key' as a log probability.
             // (count of given n-gram) + 1 / (count of all characters in the corpus) + Vocabulary size
@@ -130,10 +81,21 @@ public class NGramModel {
         return smoothingEstimate;
     }
 
+    /**
+     * A method which calculates the candidate probability to be used in the implementation of Beam Search.
+     * @param n : The maximum size of n-grams taken from corpus.
+     * @param corpus : The corpus as a string.
+     * @param ngrams : An array of all n-grams taken from the corpus.
+     * @param languageModel : The language model for a given corpus.
+     * @param candidate : The candidate this method calculates the probability of.
+     * @param vocabSize : The number of all n-grams in the language model.
+     * @return : The log probabilities of the two plaintexts in the given candidate returned as a double.
+     */
     public Double[] calculateCandidateProbability(int n, String corpus, Map<String, Integer>[] ngrams, HashMap<String,
-            Double> languageModel, String plaintext_one, String plaintext_two,
-                                                  Tuple candidate, int vocabSize) {
+            Double> languageModel, Tuple candidate, int vocabSize) {
 
+        String plaintext_one = candidate.getPlaintextOne();
+        String plaintext_two = candidate.getPlaintextTwo();
         String p_one_ngram;
         String p_two_ngram;
         String pOne_n_minus_one_gram;
@@ -177,61 +139,61 @@ public class NGramModel {
         if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
                 !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_one_prob = Math.log(laplaceSmoothing(ngrams, p_one_ngram, corpus, vocabSize));
-            p_two_prob = Math.log(laplaceSmoothing(ngrams, p_two_ngram, corpus, vocabSize));
-            p_one_nminus_prob = Math.log(laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus, vocabSize));
-            p_two_nminus_prob = Math.log(laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize));
+            p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
+            p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
+            p_one_nminus_prob = Math.log(estimateProbability(ngrams, pOne_n_minus_one_gram, corpus, vocabSize));
+            p_two_nminus_prob = Math.log(estimateProbability(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize));
             System.out.println("both not in lm");
         } else if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
                 languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_one_prob = Math.log(laplaceSmoothing(ngrams, p_one_ngram, corpus, vocabSize));
-            p_one_nminus_prob = Math.log(laplaceSmoothing(ngrams, pOne_n_minus_one_gram, corpus, vocabSize));
-            p_two_nminus_prob = languageModel.get(pTwo_n_minus_one_gram);
+            p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
+            p_one_nminus_prob = Math.log(estimateProbability(ngrams, pOne_n_minus_one_gram, corpus, vocabSize));
+            p_two_nminus_prob = Math.log(languageModel.get(pTwo_n_minus_one_gram));
 
             if (languageModel.containsKey(p_two_ngram)) {
-                p_two_prob = languageModel.get(p_two_ngram);
+                p_two_prob = Math.log(languageModel.get(p_two_ngram));
             } else {
-                p_two_prob = Math.log(laplaceSmoothing(ngrams, p_two_ngram, corpus, vocabSize));
+                p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
             }
 
             System.out.println("p1 not in lm");
         } else if (languageModel.containsKey(pOne_n_minus_one_gram) &&
                 !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_two_prob = Math.log(laplaceSmoothing(ngrams, p_two_ngram, corpus, vocabSize));
-            p_two_nminus_prob = Math.log(laplaceSmoothing(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize));
-            p_one_nminus_prob = languageModel.get(pOne_n_minus_one_gram);
+            p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
+            p_two_nminus_prob = Math.log(estimateProbability(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize));
+            p_one_nminus_prob = Math.log(languageModel.get(pOne_n_minus_one_gram));
 
             if (languageModel.containsKey(p_one_ngram)) {
-                p_one_prob = languageModel.get(p_one_ngram);
+                p_one_prob = Math.log(languageModel.get(p_one_ngram));
             } else {
-                p_one_prob = Math.log(laplaceSmoothing(ngrams, p_one_ngram, corpus, vocabSize));
+                p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
             }
 
             System.out.println("p2 not in lm");
         } else {
 
-            p_one_nminus_prob = languageModel.get(pOne_n_minus_one_gram);
-            p_two_nminus_prob = languageModel.get(pTwo_n_minus_one_gram);
+            p_one_nminus_prob = Math.log(languageModel.get(pOne_n_minus_one_gram));
+            p_two_nminus_prob = Math.log(languageModel.get(pTwo_n_minus_one_gram));
 
             if (languageModel.containsKey(p_one_ngram)) {
-                p_one_prob = languageModel.get(p_one_ngram);
+                p_one_prob = Math.log(languageModel.get(p_one_ngram));
             } else {
-                p_one_prob = Math.log(laplaceSmoothing(ngrams, p_one_ngram, corpus, vocabSize));
+                p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
             }
 
             if (languageModel.containsKey(p_two_ngram)) {
-                p_two_prob = languageModel.get(p_two_ngram);
+                p_two_prob = Math.log(languageModel.get(p_two_ngram));
             } else {
-                p_two_prob = Math.log(laplaceSmoothing(ngrams, p_two_ngram, corpus, vocabSize));
+                p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
             }
 
             System.out.println("both in lm");
         }
 
-        cand_prob_one = candidate.getPercentageOne() + p_one_prob - p_one_nminus_prob;
-        cand_prob_two = candidate.getPercentageTwo() + p_two_prob - p_two_nminus_prob;
+        cand_prob_one = candidate.getProbOne() + p_one_prob - p_one_nminus_prob;
+        cand_prob_two = candidate.getProbTwo() + p_two_prob - p_two_nminus_prob;
 
         return new Double[]{cand_prob_one, cand_prob_two};
     }

@@ -21,12 +21,12 @@ public class TestNGramModel {
         ngrams = new HashMap<String, Integer>();
     }
 
-    @Test
-    public void testEstimateProbabilities() {
-        ngrams.put("test1", 1);
-        ngrams.put("test2", 2);
-        Double expected = Math.log(1.0 / 2.0);
-        assertEquals(expected, model.estimateProbability(ngrams, "test1", null));
-    }
+//    @Test
+//    public void testEstimateProbabilities() {
+//        ngrams.put("test1", 1);
+//        ngrams.put("test2", 2);
+//        Double expected = Math.log(1.0 / 2.0);
+//        assertEquals(expected, model.estimateProbability(ngrams, "test1", null));
+//    }
 
 }

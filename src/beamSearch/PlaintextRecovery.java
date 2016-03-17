@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -52,9 +51,9 @@ public class PlaintextRecovery {
         InputStream is = new FileInputStream(corpus);
         String stringCorpus = split.fileToString(is);
         int n = parse.getN();
-        int pruneNumber = 1000;
+        int pruneNumber = 256;
         ConcurrentHashMap<String, Integer> ngramModel;
-        byte[] ciphertext = beam.getCipherText(10, stringCorpus);
+        byte[] ciphertext = beam.getXOROfPlaintext(10, stringCorpus);
         ngramModel = parse.processFiles(corpus, n);
         ConcurrentHashMap<String, Integer>[] mapArr = split.splitMap(ngramModel, n);
         HashMap<String, Double> languageModel = lm.createModel(mapArr, stringCorpus);

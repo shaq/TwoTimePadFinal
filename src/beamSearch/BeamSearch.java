@@ -82,7 +82,7 @@ public class BeamSearch {
      * @param n : the chose length of the ciphertext by the user.
      * @return ciphertext : the XOR of two random ciphertexts of length n.
      **/
-    public static byte[] getCipherText(int n, String corpus) {
+    public static byte[] getXOROfPlaintext(int n, String corpus) {
 
         Random rand = new Random();
         int[] randomIndices = new int[2];
@@ -194,8 +194,8 @@ public class BeamSearch {
                     plaintext_two = t.getPlaintextTwo() + p_two_next;
 
 
-                    Double[] candProb = model.calculateCandidateProbability(n, corpus, ngramArr, languageModel,
-                            plaintext_one, plaintext_two, t, vocabSize);
+                    Double[] candProb = model.calculateCandidateProbability(n, corpus, ngramArr, languageModel, t,
+                            vocabSize);
 
 //                    System.out.println("p_length: " + plaintext_one.length());
                     System.out.println("1: " + plaintext_one);
@@ -215,8 +215,8 @@ public class BeamSearch {
             Collections.sort(temp, new Comparator<Tuple>() {
                 @Override
                 public int compare(Tuple t1, Tuple t2) {
-                    Double t1_perc = t1.getPercentageOne() + t1.getPercentageTwo();
-                    Double t2_perc = t2.getPercentageOne() + t2.getPercentageTwo();
+                    Double t1_perc = t1.getProbOne() + t1.getProbTwo();
+                    Double t2_perc = t2.getProbOne() + t2.getProbTwo();
                     return Double.compare(t1_perc, t2_perc);
                 }
 
