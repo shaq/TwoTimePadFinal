@@ -67,7 +67,8 @@ public class BeamSearch {
      * @param one        : Byte to be XORed.
      * @param two        : Byte to be XORed.
      * @param ciphertext : the ciphertext byte.
-     * @return : Returns true or false after evaluating if the XOR of the two bytes equal the
+     * @return : Returns true or false after evaluating if the XOR of the two
+     * bytes equal the
      * ciphertext byte.
      **/
     public static boolean checkXOR(byte one, byte two, byte ciphertext) {
@@ -148,6 +149,8 @@ public class BeamSearch {
         String plaintext_two;
         char p_one_next;
         char p_two_next;
+        int vocabSize = model.getVocabSize(ngramArr);
+
 
         /**
          The ArrayList to hold all the candidates of plaintexts.
@@ -192,7 +195,7 @@ public class BeamSearch {
 
 
                     Double[] candProb = model.calculateCandidateProbability(n, corpus, ngramArr, languageModel,
-                            plaintext_one, plaintext_two, t);
+                            plaintext_one, plaintext_two, t, vocabSize);
 
 //                    System.out.println("p_length: " + plaintext_one.length());
                     System.out.println("1: " + plaintext_one);
@@ -220,7 +223,7 @@ public class BeamSearch {
             });
 
             Collections.reverse(temp);
-            System.out.println("++++++++++++++++++++ After sorting ++++++++++++++++++++\n" + temp);
+//            System.out.println("++++++++++++++++++++ After sorting ++++++++++++++++++++\n" + temp);
             // Setting 'candidates' to be the top 'pruneNumber' plaintext candidates.
             temp = new ArrayList<Tuple>(temp.subList(0, pruneNumber));
 

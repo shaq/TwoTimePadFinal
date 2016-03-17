@@ -62,7 +62,7 @@ public class Tuple {
     @Override
     public String toString() {
         return "[ Plaintext One: " + getPlaintextOne() + ", Plaintext Two: " + getPlaintextTwo() + ", Percentage: " +
-                (Math.exp(getPercentageOne() + getPercentageTwo())*100) + "% ]";
+                "log prob: " + (getPercentageOne() + getPercentageTwo()) + " ]";
     }
 
     /*static class TupleComparator implements Comparator<Tuple> {

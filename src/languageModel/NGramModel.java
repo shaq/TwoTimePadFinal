@@ -53,7 +53,7 @@ public class NGramModel {
                 }
             }
 
-            // Calculate the MLE for the given n-gram 'key' as a log probability.
+            // Calculate the MLE for the given n-gram 'key' as` a log probability.
             // (count of given n-gram ) / (count of (n-1)-grams for given n-gram)
             nGramMLE = (keyCount / denomCount);
 
@@ -132,7 +132,7 @@ public class NGramModel {
 
     public Double[] calculateCandidateProbability(int n, String corpus, Map<String, Integer>[] ngrams, HashMap<String,
             Double> languageModel, String plaintext_one, String plaintext_two,
-                                                  Tuple candidate) {
+                                                  Tuple candidate, int vocabSize) {
 
         String p_one_ngram;
         String p_two_ngram;
@@ -144,7 +144,6 @@ public class NGramModel {
         Double p_two_prob;
         Double p_one_nminus_prob;
         Double p_two_nminus_prob;
-        int vocabSize = getVocabSize(ngrams);
 
         int p_length = plaintext_one.length();
 

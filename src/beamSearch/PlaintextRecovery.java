@@ -52,7 +52,7 @@ public class PlaintextRecovery {
         InputStream is = new FileInputStream(corpus);
         String stringCorpus = split.fileToString(is);
         int n = parse.getN();
-        int pruneNumber = 100;
+        int pruneNumber = 1000;
         ConcurrentHashMap<String, Integer> ngramModel;
         byte[] ciphertext = beam.getCipherText(10, stringCorpus);
         ngramModel = parse.processFiles(corpus, n);
