@@ -53,8 +53,8 @@ public class Tuple {
 
     @Override
     public String toString() {
-        return "[ Plaintext One: " + getPlaintextOne() + ", Plaintext Two: " + getPlaintextTwo() + ", Percentage: " +
-                "Log probability: " + (getProbOne() + getProbTwo()) + " ]";
+        return "[ Plaintext One: " + getPlaintextOne() + ", Plaintext Two: " + getPlaintextTwo() +
+                ", Log probability: " + (getProbOne() + getProbTwo()) + " ]";
     }
 
 }

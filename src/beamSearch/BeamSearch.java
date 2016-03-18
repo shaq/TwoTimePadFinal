@@ -106,11 +106,11 @@ public class BeamSearch {
         System.out.println(Arrays.toString(c_two_arr));
         System.out.println(c_two);
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         int length = ciphertext.length;
         for (int i = 0; i < length; i++) {
@@ -140,7 +140,7 @@ public class BeamSearch {
          Adding the log probability of the empty string to the language model.
          This is 100% since every string starts from the empty string.
          **/
-        Double emptyStringProb = Math.log(1.0);
+        Double emptyStringProb = 1.0;
         languageModel.put("", emptyStringProb);
 //        Map<String, Integer> ngrams = ngramArr;
 
@@ -159,7 +159,7 @@ public class BeamSearch {
 
         // Setting all the candidates to initially have empty strings and 0 probability.
         for (int ascii = 0; ascii < printableAscii.length; ascii++) {
-            candidates.add(new Tuple("", "", emptyStringProb, emptyStringProb));
+            candidates.add(new Tuple("", "", Math.log(emptyStringProb), Math.log(emptyStringProb)));
         }
 
         // The main loop controlling the building of the candidates.
@@ -174,7 +174,6 @@ public class BeamSearch {
             for (int candNum = 0; candNum < candidates.size(); candNum++) {
 
                 Tuple t = (candidates.get(candNum));
-
 
                 // For every candidate in 'candidates' we extend by one 256 times. Once for each Ascii character.
                 // We then sort and keep the best 'pruneNumber' candidates before repeating.
@@ -195,7 +194,7 @@ public class BeamSearch {
 
 
                     Double[] candProb = model.calculateCandidateProbability(n, corpus, ngramArr, languageModel, t,
-                            vocabSize);
+                            plaintext_one, plaintext_two, vocabSize);
 
 //                    System.out.println("p_length: " + plaintext_one.length());
                     System.out.println("1: " + plaintext_one);
@@ -225,7 +224,7 @@ public class BeamSearch {
             Collections.reverse(temp);
 //            System.out.println("++++++++++++++++++++ After sorting ++++++++++++++++++++\n" + temp);
             // Setting 'candidates' to be the top 'pruneNumber' plaintext candidates.
-            temp = new ArrayList<Tuple>(temp.subList(0, pruneNumber));
+            temp = new ArrayList<>(temp.subList(0, pruneNumber));
 
             candidates = temp;
 

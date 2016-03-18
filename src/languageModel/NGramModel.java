@@ -92,10 +92,8 @@ public class NGramModel {
      * @return : The log probabilities of the two plaintexts in the given candidate returned as a double.
      */
     public Double[] calculateCandidateProbability(int n, String corpus, Map<String, Integer>[] ngrams, HashMap<String,
-            Double> languageModel, Tuple candidate, int vocabSize) {
+            Double> languageModel, Tuple candidate, String plaintext_one, String plaintext_two,int vocabSize) {
 
-        String plaintext_one = candidate.getPlaintextOne();
-        String plaintext_two = candidate.getPlaintextTwo();
         String p_one_ngram;
         String p_two_ngram;
         String pOne_n_minus_one_gram;
@@ -120,7 +118,7 @@ public class NGramModel {
             pOne_n_minus_one_gram = p_one_ngram.substring(0, p_one_ngram.length() - 1);
             pTwo_n_minus_one_gram = p_two_ngram.substring(0, p_two_ngram.length() - 1);
 
-        } else if (p_length > 1 && p_length < n) {
+        } else if (p_length > 1 && p_length <= n) {
 
             p_one_ngram = plaintext_one;
             p_two_ngram = plaintext_two;
