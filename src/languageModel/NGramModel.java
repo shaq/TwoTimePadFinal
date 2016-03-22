@@ -107,7 +107,7 @@ public class NGramModel {
 
         int p_length = plaintext_one.length();
 
-        System.out.println(p_length);
+//        System.out.println(p_length);
         // Logic used to control of the initialisation of the ngrams and
         // (n-1)grams to be used in the probability
         // logic below.
@@ -141,7 +141,7 @@ public class NGramModel {
             p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
             p_one_nminus_prob = Math.log(estimateProbability(ngrams, pOne_n_minus_one_gram, corpus, vocabSize));
             p_two_nminus_prob = Math.log(estimateProbability(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize));
-            System.out.println("both not in lm");
+//            System.out.println("both not in lm");
         } else if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
                 languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
@@ -155,7 +155,7 @@ public class NGramModel {
                 p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
             }
 
-            System.out.println("p1 not in lm");
+//            System.out.println("p1 not in lm");
         } else if (languageModel.containsKey(pOne_n_minus_one_gram) &&
                 !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
@@ -169,7 +169,7 @@ public class NGramModel {
                 p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
             }
 
-            System.out.println("p2 not in lm");
+//            System.out.println("p2 not in lm");
         } else {
 
             p_one_nminus_prob = Math.log(languageModel.get(pOne_n_minus_one_gram));
@@ -187,7 +187,7 @@ public class NGramModel {
                 p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
             }
 
-            System.out.println("both in lm");
+//            System.out.println("both in lm");
         }
 
         cand_prob_one = candidate.getProbOne() + p_one_prob - p_one_nminus_prob;

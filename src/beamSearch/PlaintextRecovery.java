@@ -51,7 +51,7 @@ public class PlaintextRecovery {
         InputStream is = new FileInputStream(corpus);
         String stringCorpus = split.fileToString(is);
         int n = parse.getN();
-        int pruneNumber = 256;
+        int pruneNumber = 1000;
         ConcurrentHashMap<String, Integer> ngramModel;
         byte[] ciphertext = beam.getXOROfPlaintext(10, stringCorpus);
         ngramModel = parse.processFiles(corpus, n);
@@ -66,6 +66,7 @@ public class PlaintextRecovery {
 
         ArrayList<Tuple> candidates;
         candidates = beam.beamSearch(stringCorpus, mapArr, languageModel, n, pruneNumber, ciphertext);
+        System.out.println("Most probable plaintext candidates:");
         getTopPlaintextCandidates(candidates);
 
     }

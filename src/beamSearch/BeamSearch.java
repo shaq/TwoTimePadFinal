@@ -25,6 +25,7 @@ public class BeamSearch {
     private static LanguageModel lm = new LanguageModel();
     private static NGramModel model = new NGramModel();
     private static NGram ngram = new NGram();
+    private static Tuple tuple = new Tuple();
 
     /**
      * A constructor that initialises the array to hold the ascii codes for all printable english ascii text.
@@ -38,6 +39,19 @@ public class BeamSearch {
             printableAscii[i] = ascii;
             ascii++;
         }
+    }
+
+    public void removeDuplicateCandidates(ArrayList<Tuple> candidates) {
+
+
+        for (int i = 0; i < candidates.size(); i++) {
+            for (int j = i+1; j < candidates.size(); j++) {
+                if(tuple.equals(candidates.get(i), candidates.get(j))) {
+                    candidates.remove(j);
+                }
+            }
+        }
+
     }
 
     /**
@@ -169,7 +183,7 @@ public class BeamSearch {
             // A temporary ArrayList to store all possible candidates before pruning
             // for top 'pruneNumber' candidates.
             ArrayList<Tuple> temp = new ArrayList<Tuple>();
-            System.out.println("Candidates: " + candidates);
+//            System.out.println("Candidates: " + candidates);
 
             for (int candNum = 0; candNum < candidates.size(); candNum++) {
 
@@ -197,12 +211,11 @@ public class BeamSearch {
                             plaintext_one, plaintext_two, vocabSize);
 
 //                    System.out.println("p_length: " + plaintext_one.length());
-                    System.out.println("1: " + plaintext_one);
-                    System.out.println("P1 = " + candProb[0]);
-
-                    System.out.println("2: " + plaintext_two);
-                    System.out.println("P2 = " + candProb[1]);
-
+//                    System.out.println("1: " + plaintext_one);
+//                    System.out.println("P1 = " + candProb[0]);
+//
+//                    System.out.println("2: " + plaintext_two);
+//                    System.out.println("P2 = " + candProb[1]);
                     temp.add(new Tuple(plaintext_one, plaintext_two, candProb[0], candProb[1]));
 
                 }
@@ -222,10 +235,16 @@ public class BeamSearch {
             });
 
             Collections.reverse(temp);
-//            System.out.println("++++++++++++++++++++ After sorting ++++++++++++++++++++\n" + temp);
-            // Setting 'candidates' to be the top 'pruneNumber' plaintext candidates.
-            temp = new ArrayList<>(temp.subList(0, pruneNumber));
+            System.out.println("++++++++++++++++++++ Before removing duplicates ++++++++++++++++++++\n" + temp);
 
+            removeDuplicateCandidates(temp);
+
+            System.out.println("++++++++++++++++++++ After removing duplicates ++++++++++++++++++++\n" + temp);
+            // Setting 'candidates' to be the top 'pruneNumber' plaintext candidates.
+            if(pruneNumber < temp.size()) {
+                temp = new ArrayList<>(temp.subList(0, pruneNumber));
+            }
+            System.out.println("temp:\n" + temp);
             candidates = temp;
 
 

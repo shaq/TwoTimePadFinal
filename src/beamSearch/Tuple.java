@@ -9,14 +9,16 @@ public class Tuple {
 
     private String plaintext_one;
     private String plaintext_two;
-    private Double percentage_one;
-    private Double percentage_two;
+    private Double probability_one;
+    private Double probability_two;
+
+    public Tuple() {}
 
     public Tuple(String plaintext_one, String plaintext_two, Double percentage_one, Double percentage_two) {
         this.plaintext_one = plaintext_one;
         this.plaintext_two = plaintext_two;
-        this.percentage_one = percentage_one;
-        this.percentage_two = percentage_two;
+        this.probability_one = percentage_one;
+        this.probability_two = percentage_two;
     }
 
     public String getPlaintextOne() {
@@ -36,18 +38,25 @@ public class Tuple {
     }
 
     public Double getProbOne() {
-        return percentage_one;
+        return probability_one;
     }
 
     public Double getProbTwo() {
-        return percentage_two;
+        return probability_two;
     }
 
+
     public boolean equals(Tuple one, Tuple two) {
-        Double percentage_one = one.getProbOne() + one.getProbTwo();
-        Double percentage_two = two.getProbTwo() + two.getProbTwo();
-        return one.getPlaintextOne() == two.getPlaintextOne() && one.getPlaintextTwo() == two.getPlaintextTwo() &&
-                percentage_one == percentage_two;
+
+        if (one.getPlaintextOne().equals(two.getPlaintextOne())
+                && one.getPlaintextTwo().equals(two.getPlaintextTwo())) {
+            return true;
+        } else if (one.getPlaintextOne().equals(two.getPlaintextTwo())
+                && one.getPlaintextTwo().equals(two.getPlaintextOne())) {
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
