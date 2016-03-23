@@ -1,11 +1,8 @@
 package languageModel;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class LanguageModel {
 
@@ -29,7 +26,6 @@ public class LanguageModel {
         Double probEstimate;
 
         for(int map = 0; map < mapArr.length; map++){
-            int keyLength = map + 1;
             Map<String, Integer> tmpMap = mapArr[map];
             Set<Map.Entry<String, Integer>> entries = tmpMap.entrySet();
 
