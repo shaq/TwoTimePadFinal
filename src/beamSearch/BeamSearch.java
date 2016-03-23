@@ -1,9 +1,6 @@
 package beamSearch;
 
-import languageModel.LanguageModel;
-import languageModel.NGram;
 import languageModel.NGramModel;
-import languageModel.ParseCorpus;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -21,10 +18,7 @@ public class BeamSearch {
 
     // Creating an array that will hold ascii codes for all printable english ascii characters.
     private static int[] printableAscii = new int[96];
-    private static ParseCorpus parse = new ParseCorpus();
-    private static LanguageModel lm = new LanguageModel();
     private static NGramModel model = new NGramModel();
-    private static NGram ngram = new NGram();
     private static Tuple tuple = new Tuple();
 
     /**
@@ -41,17 +35,18 @@ public class BeamSearch {
         }
     }
 
+    /**
+     * A method that removes duplicate tuples from the given ArrayList.
+     * @param candidates
+     */
     public void removeDuplicateCandidates(ArrayList<Tuple> candidates) {
-
-
         for (int i = 0; i < candidates.size(); i++) {
-            for (int j = i+1; j < candidates.size(); j++) {
-                if(tuple.equals(candidates.get(i), candidates.get(j))) {
+            for (int j = i + 1; j < candidates.size(); j++) {
+                if (tuple.equals(candidates.get(i), candidates.get(j))) {
                     candidates.remove(j);
                 }
             }
         }
-
     }
 
     /**
@@ -80,7 +75,7 @@ public class BeamSearch {
      *
      * @param one        : Byte to be XORed.
      * @param two        : Byte to be XORed.
-     * @param ciphertext : the ciphertext byte.
+     * @param ciphertext : The ciphertext byte.
      * @return : Returns true or false after evaluating if the XOR of the two
      * bytes equal the
      * ciphertext byte.
@@ -90,48 +85,57 @@ public class BeamSearch {
     }
 
     /**
-     * A method to generate a random position from the corpus of length.
+     * A method that generates k strings from the random positons in the given corpus.
+     *
+     * @param ptxtLength : The length of the strings to be generated.
+     * @param k          : The number of strings to be generated.
+     * @param corpus     : The corpus to get the strings from.
+     * @return : An array from the strings from random positions.
+     */
+    public static String[] getPlaintextValues(int ptxtLength, int k, String corpus) {
+        Random rand = new Random();
+        String[] plaintexts = new String[k];
+        int randVal = 0;
+
+        for (int i = 0; i < k; i++) {
+            randVal = rand.nextInt(corpus.length() - ptxtLength);
+            plaintexts[i] = corpus.substring(randVal, randVal + ptxtLength);
+        }
+
+        return plaintexts;
+    }
+
+    /**
+     * A method to returns the xor of k random plaintexts taken from the corpus.
      * This is then used to test the beam search algorithm.
      *
-     * @param n : the chose length of the ciphertext by the user.
-     * @return ciphertext : the XOR of two random ciphertexts of length n.
+     * @param ctxtLength : The chosen length of the ciphertext by the user.
+     * @param k          : The number of plaintexts to be XORed.
+     * @param corpus     : The corpus where the plaintexts are taken from.
+     * @return : the XOR of two random ciphertexts of length n.
      **/
-    public static byte[] getXOROfPlaintext(int n, String corpus) {
+    public static byte[] getXOROfPlaintext(int ctxtLength, int k, String corpus) {
 
-        Random rand = new Random();
-        int[] randomIndices = new int[2];
-        int tmp = 0;
+        String[] plaintexts = getPlaintextValues(ctxtLength, k, corpus);
+        byte[][] xorOfPlaintexts = new byte[k][];
 
-        for (int i = 0; i < 2; i++) {
-            tmp = rand.nextInt(corpus.length() - n);
-            randomIndices[i] = tmp;
+        for (int i = 0; i < k; i++) {
+            xorOfPlaintexts[i] = encodeStringToAscii(plaintexts[i]);
+            System.out.println("P" + i + " " + plaintexts[i]);
         }
 
-        String c_one = corpus.substring(randomIndices[0], randomIndices[0] + n + 1);
-        String c_two = corpus.substring(randomIndices[1], randomIndices[1] + n + 1);
+        byte[] ptxtByteArr = new byte[ctxtLength];
 
-        byte[] c_one_arr = encodeStringToAscii(c_one);
-        byte[] c_two_arr = encodeStringToAscii(c_two);
-        byte[] ciphertext = new byte[c_one.length()];
 
-        // Testing code that prints out the plaintexts and their byte codes.
-        System.out.println(Arrays.toString(c_one_arr));
-        System.out.println(c_one);
-        System.out.println(Arrays.toString(c_two_arr));
-        System.out.println(c_two);
-
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
-        int length = ciphertext.length;
-        for (int i = 0; i < length; i++) {
-            ciphertext[i] = (byte) (c_one_arr[i] ^ c_two_arr[i]);
+        for (int i = 0; i < ctxtLength; i++) {
+            byte tmp = 0;
+            for (int j = 0; j < k; j++) {
+                tmp = (byte) (tmp ^ xorOfPlaintexts[j][i]);
+            }
+            ptxtByteArr[i] = tmp;
         }
 
-        return ciphertext;
+        return ptxtByteArr;
 
     }
 
@@ -140,7 +144,7 @@ public class BeamSearch {
      * of ciphertexts.
      *
      * @param corpus        : The corpus used to build language models and used in smoothing.
-     * @param ngramArr    : A HashMap containing all ngrams for given corpus, to be used in smoothing.
+     * @param ngramArr      : A HashMap containing all ngrams for given corpus, to be used in smoothing.
      * @param languageModel : The language model containing the probability of all ngrams from a corpus.
      * @param n             : The maximum size of ngrams to be stored in the language model.
      * @param pruneNumber   : The number to prune each subsequent candidate list down to.
@@ -150,13 +154,11 @@ public class BeamSearch {
     public ArrayList<Tuple> beamSearch(String corpus, Map<String, Integer>[] ngramArr, HashMap<String,
             Double> languageModel, int n, int pruneNumber, byte[] ciphertext) {
 
-        /**
-         Adding the log probability of the empty string to the language model.
-         This is 100% since every string starts from the empty string.
-         **/
+
+        // Adding the log probability of the empty string to the language model.
+        // This is always 1.0 since every string starts from the empty string.
         Double emptyStringProb = 1.0;
         languageModel.put("", emptyStringProb);
-//        Map<String, Integer> ngrams = ngramArr;
 
         // The two candidate strings to be used repeatedly in the algorithm.
         String plaintext_one;
@@ -166,12 +168,11 @@ public class BeamSearch {
         int vocabSize = model.getVocabSize(ngramArr);
 
 
-        /**
-         The ArrayList to hold all the candidates of plaintexts.
-         **/
+
+        // The ArrayList to hold all the candidates of plaintexts.
         ArrayList<Tuple> candidates = new ArrayList<Tuple>();
 
-        // Setting all the candidates to initially have empty strings and 0 probability.
+        // Setting all the candidates to initially have empty strings and 0 log probability.
         for (int ascii = 0; ascii < printableAscii.length; ascii++) {
             candidates.add(new Tuple("", "", Math.log(emptyStringProb), Math.log(emptyStringProb)));
         }
@@ -183,7 +184,6 @@ public class BeamSearch {
             // A temporary ArrayList to store all possible candidates before pruning
             // for top 'pruneNumber' candidates.
             ArrayList<Tuple> temp = new ArrayList<Tuple>();
-//            System.out.println("Candidates: " + candidates);
 
             for (int candNum = 0; candNum < candidates.size(); candNum++) {
 
@@ -195,35 +195,28 @@ public class BeamSearch {
 
                     p_one_next = (char) printableAscii[ascii];
 
-                    /**
-                     By using our character in p_one_next and the character at 'position' in the ciphertext, we can
-                     obtain the unique candidate for p_two_next, since p_one_next XOR p_two_next must equal the
-                     character of the ciphertext at 'position'.
-                     **/
+
+                    // By using our character in p_one_next and the character at 'position' in the ciphertext, we can
+                    // obtain the unique candidate for p_two_next, since p_one_next XOR p_two_next must equal the
+                    // character of the ciphertext at 'position'.
                     p_two_next = (char) (printableAscii[ascii] ^ ciphertext[position]);
 
                     // Concatenating our two candidate plaintexts with the next character.
                     plaintext_one = t.getPlaintextOne() + p_one_next;
                     plaintext_two = t.getPlaintextTwo() + p_two_next;
 
-
+                    // Calculating the probability of each plaintext in the current candidate and storing themm in
+                    // an array.
                     Double[] candProb = model.calculateCandidateProbability(n, corpus, ngramArr, languageModel, t,
                             plaintext_one, plaintext_two, vocabSize);
 
-//                    System.out.println("p_length: " + plaintext_one.length());
-//                    System.out.println("1: " + plaintext_one);
-//                    System.out.println("P1 = " + candProb[0]);
-//
-//                    System.out.println("2: " + plaintext_two);
-//                    System.out.println("P2 = " + candProb[1]);
                     temp.add(new Tuple(plaintext_one, plaintext_two, candProb[0], candProb[1]));
 
                 }
 
             }
 
-//            System.out.println("++++++++++++++++++++ Before sorting ++++++++++++++++++++\n" + temp);
-            // Sorting ('pruneNumber' x 96) candidates.
+            // Sorting the list of candidates by their probability.
             Collections.sort(temp, new Comparator<Tuple>() {
                 @Override
                 public int compare(Tuple t1, Tuple t2) {
@@ -234,19 +227,18 @@ public class BeamSearch {
 
             });
 
+            // Putting the list in descending order - from most probable to least.
             Collections.reverse(temp);
-            System.out.println("++++++++++++++++++++ Before removing duplicates ++++++++++++++++++++\n" + temp);
 
+            // Removing duplicates from the list of all candidates before it is pruned.
             removeDuplicateCandidates(temp);
 
-            System.out.println("++++++++++++++++++++ After removing duplicates ++++++++++++++++++++\n" + temp);
-            // Setting 'candidates' to be the top 'pruneNumber' plaintext candidates.
-            if(pruneNumber < temp.size()) {
+            // Setting 'candidates' to be the top 'pruneNumber' plaintext candidates but only if the .
+            if (pruneNumber < temp.size()) {
                 temp = new ArrayList<>(temp.subList(0, pruneNumber));
             }
-            System.out.println("temp:\n" + temp);
-            candidates = temp;
 
+            candidates = temp;
 
         }
 

@@ -14,7 +14,8 @@ import java.util.concurrent.*;
  * @author Shaquille Momoh
  */
 public class Split {
-    NGram ngram = new NGram();
+    private NGram ngram = new NGram();
+    private ParseCorpus parse = new ParseCorpus();
     private int n;
     private File file;
     private ConcurrentHashMap<String, Integer> languageModel;
@@ -36,7 +37,14 @@ public class Split {
         this.n = n;
     }
 
-    public ConcurrentHashMap<String, Integer>[] splitMap(Map<String, Integer> map, int n){
+    /**
+     * A method that returns an Array containing maps of n-grams from 1 to n.
+     *
+     * @param map : The map to split.
+     * @param n   : The maximum n-gram size.
+     * @return
+     */
+    public ConcurrentHashMap<String, Integer>[] splitMap(Map<String, Integer> map, int n) {
 
         ConcurrentHashMap<String, Integer>[] mapArr = new ConcurrentHashMap[n];
         for (int i = 0; i < n; i++) {
@@ -57,23 +65,12 @@ public class Split {
         return mapArr;
     }
 
-    public Map<String, Integer> getMap(Map<String, Integer>[] mapArr, int keyLength){
-        Map<String, Integer> newMap = new ConcurrentHashMap<>();
-        int n_minus_map_index;
-        if(keyLength == 1) {
-            n_minus_map_index = keyLength - 1;
-        }else{
-            n_minus_map_index = keyLength - 2;
-        }
-        for (int map = n_minus_map_index; map < keyLength; map++) {
-            newMap.putAll(mapArr[map]);
-        }
-
-        return newMap;
-    }
-
-    public void mapArrToString(Map<String, Integer>[] mapArr){
-        for (int map = 0; map < mapArr.length ; map++) {
+    /**
+     * A method that prints out the given array of maps in a clear format.
+     * @param mapArr
+     */
+    public void mapArrToString(Map<String, Integer>[] mapArr) {
+        for (int map = 0; map < mapArr.length; map++) {
             int n = map + 1;
             System.out.println(n + "-grams: \n" + mapArr[map]);
         }
@@ -104,25 +101,14 @@ public class Split {
      * @throws IOException
      */
     public long getChunkNumber(int noThreads) throws IOException {
-        return this.file.length() / noThreads;
-    }
-
-    /**
-     * Converts an input stream to String.
-     * @param is
-     * @return The converted String.
-     * @throws IOException
-     */
-    public String fileToString(InputStream is) throws IOException {
-        StringBuilder builder;
-        builder = new StringBuilder();
-
-        int ch;
-        while ((ch = is.read()) != -1) {
-            builder.append((char) ch);
+        long corpusLength = 0;
+        if(file.isDirectory()){
+            File[] dir = file.listFiles();
+            for (int i = 0; i < dir.length; i++) {
+                corpusLength += dir[i].length();
+            }
         }
-
-        return builder.toString();
+        return corpusLength / noThreads;
     }
 
     /**
@@ -134,17 +120,14 @@ public class Split {
      * @return : A HashMap containing ngrams and counts for the part processed.
      */
     public ConcurrentHashMap<String, Integer> processPart(long start, long end) throws Exception {
-        InputStream is = new FileInputStream(file);
-        is.skip(start);
 
-        String text = fileToString(is);
+        String text = parse.fileToString(file);
         ConcurrentHashMap<String, Integer> ngrams = new ConcurrentHashMap<>();
         ngram.addNGrams(ngrams, text, 1, n);
         System.out.println("Computing the part from " + start + " to " + end);
         Thread.sleep(1000);
         System.out.println("Finished the part from " + start + " to " + end);
 
-        is.close();
         return ngrams;
     }
 
@@ -175,12 +158,12 @@ public class Split {
      * @return : A ConcurrentHashMap containing all the n-grams for the given file, along with their counts.
      * @throws InterruptedException
      */
-    public ConcurrentHashMap<String, Integer> processAll(int noOfThreads, long chunkSize) throws InterruptedException,
-            ExecutionException {
-        int count = (int) ((file.length() + chunkSize - 1) / chunkSize);
+    public ConcurrentHashMap<String, Integer> processAll(int noOfThreads, long chunkSize, int corpusLength)
+            throws InterruptedException, ExecutionException {
+        int count = (int) ((corpusLength + chunkSize - 1) / chunkSize);
         List<Callable<ConcurrentHashMap<String, Integer>>> tasks = new ArrayList<>(count);
         for (int i = 0; i < count; i++)
-            tasks.add(processPartTask(i * chunkSize, Math.min(file.length(), (i + 1) * chunkSize)));
+            tasks.add(processPartTask(i * chunkSize, Math.min(corpusLength, (i + 1) * chunkSize)));
         ExecutorService es = Executors.newFixedThreadPool(noOfThreads);
 
         List<Future<ConcurrentHashMap<String, Integer>>> results = es.invokeAll(tasks);
@@ -188,7 +171,7 @@ public class Split {
         es.shutdown();
 
 
-        for(Future<ConcurrentHashMap<String, Integer>> result : results){
+        for (Future<ConcurrentHashMap<String, Integer>> result : results) {
             list.add(result.get());
         }
 

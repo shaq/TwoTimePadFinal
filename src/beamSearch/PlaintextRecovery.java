@@ -4,11 +4,14 @@ import languageModel.LanguageModel;
 import languageModel.NGram;
 import languageModel.ParseCorpus;
 import languageModel.Split;
+import org.apache.commons.cli.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,28 +48,81 @@ public class PlaintextRecovery {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
+    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException, ParseException {
+        // Command line options
+        Options options = new Options();
 
-        File corpus = parse.getCorpus();
-        InputStream is = new FileInputStream(corpus);
-        String stringCorpus = split.fileToString(is);
-        int n = parse.getN();
-        int pruneNumber = 1000;
+        options.addOption("n", "The maximum size of n-grams to be created.");
+        options.addOption("c", "The full path-name of the corpus to be used in the creation of the language model");
+        options.addOption("P", "The prune number used in the pruning operation during Beam Search.");
+        options.addOption("p", "The length of the xor of ciphertext (length of plaintext candidates)");
+        options.addOption("k", "How many times the keystream was re-used (either 2 or 3)");
+
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = parser.parse(options, args);
+
+        File corpus = null;
+        int n;
+        int pruneNumber;
+        int ptxtCandLength;
+        int keystreamReuse;
+
+        if (cmd.hasOption("c")) {
+            Path path = Paths.get(cmd.getOptionValue("c"));
+            String corpusPath = path.getFileName().toString();
+            corpus = new File(corpusPath);
+        } else {
+//            System.err.println("No corpus specified");
+//            System.exit(1);
+            corpus = new File("src/TestCorpus");
+        }
+
+//        InputStream is = new FileInputStream(corpus);
+
+        if (cmd.hasOption("n")) {
+            n = Integer.parseInt(cmd.getOptionValue("n"));
+        } else {
+            n = 3;
+            System.out.println("n set to the default value of " + n);
+        }
+
+        if (cmd.hasOption("p")) {
+            ptxtCandLength = Integer.parseInt(cmd.getOptionValue("p"));
+        } else {
+            ptxtCandLength = 10;
+            System.out.println("Length of the xor of ciphertexts set to default value of " + ptxtCandLength);
+        }
+
+        if (cmd.hasOption("P")) {
+            pruneNumber = Integer.parseInt(cmd.getOptionValue("P"));
+        } else {
+            pruneNumber = 100;
+            System.out.println("Pruning number set to the default value of " + pruneNumber);
+        }
+
+        if (cmd.hasOption("k")) {
+            keystreamReuse = Integer.parseInt(cmd.getOptionValue("k"));
+        } else {
+            keystreamReuse = 2;
+            System.out.println("Number of times key was reused set to the default value of " + keystreamReuse);
+        }
+
+        String stringCorpus = parse.fileToString(corpus);
+        System.out.println("corpus length " + stringCorpus.length());
         ConcurrentHashMap<String, Integer> ngramModel;
-        byte[] ciphertext = beam.getXOROfPlaintext(10, stringCorpus);
+        byte[] ciphertext = beam.getXOROfPlaintext(ptxtCandLength, keystreamReuse, stringCorpus);
         ngramModel = parse.processFiles(corpus, n);
         ConcurrentHashMap<String, Integer>[] mapArr = split.splitMap(ngramModel, n);
         HashMap<String, Double> languageModel = lm.createModel(mapArr, stringCorpus);
 
-        System.out.println("corpus length " + corpus.length());
 //        System.out.println("vocab size " + languageModel.size());
 //        System.out.println(ngramModel);
-        split.mapArrToString(mapArr);
-//        System.out.println(languageModel);
+//        split.mapArrToString(mapArr);
+//        System.out.println("plaintext length: " + ciphertext.length);
 
         ArrayList<Tuple> candidates;
         candidates = beam.beamSearch(stringCorpus, mapArr, languageModel, n, pruneNumber, ciphertext);
-        System.out.println("Most probable plaintext candidates:");
+        System.out.println("\n\nMost probable plaintext candidates:");
         getTopPlaintextCandidates(candidates);
 
     }
