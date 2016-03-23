@@ -86,9 +86,12 @@ public class Split {
         int availableCores = Runtime.getRuntime().availableProcessors();
 
         if (availableCores <= 2) {
+            System.out.println("available cores: " + availableCores);
             return availableCores;
         } else {
-            return availableCores - 2;
+            int threads = availableCores - 2;
+            System.out.println("Thread number: " + threads);
+            return threads;
         }
     }
 
@@ -107,8 +110,11 @@ public class Split {
             for (int i = 0; i < dir.length; i++) {
                 corpusLength += dir[i].length();
             }
-        }
-        return corpusLength / noThreads;
+        } else corpusLength = file.length();
+
+        long chunks = corpusLength / noThreads;
+        System.out.println("Chunk number:" + chunks);
+        return chunks;
     }
 
     /**

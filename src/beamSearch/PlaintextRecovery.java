@@ -52,11 +52,11 @@ public class PlaintextRecovery {
         // Command line options
         Options options = new Options();
 
-        options.addOption("n", "The maximum size of n-grams to be created.");
-        options.addOption("c", "The full path-name of the corpus to be used in the creation of the language model");
-        options.addOption("P", "The prune number used in the pruning operation during Beam Search.");
-        options.addOption("p", "The length of the xor of ciphertext (length of plaintext candidates)");
-        options.addOption("k", "How many times the keystream was re-used (either 2 or 3)");
+        options.addOption("n", true, "The maximum size of n-grams to be created.");
+        options.addOption("c", true, "The full path-name of the corpus to be used in the creation of the language model");
+        options.addOption("P", true, "The prune number used in the pruning operation during Beam Search.");
+        options.addOption("p", true, "The length of the xor of ciphertext (length of plaintext candidates)");
+        options.addOption("k", true, "How many times the keystream was re-used (either 2 or 3)");
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
@@ -68,16 +68,13 @@ public class PlaintextRecovery {
         int keystreamReuse;
 
         if (cmd.hasOption("c")) {
-            Path path = Paths.get(cmd.getOptionValue("c"));
-            String corpusPath = path.getFileName().toString();
+            String corpusPath = cmd.getOptionValue("c");
+            System.out.println(corpusPath);
             corpus = new File(corpusPath);
         } else {
-//            System.err.println("No corpus specified");
-//            System.exit(1);
-            corpus = new File("src/TestCorpus");
+            System.err.println("No corpus specified");
+            System.exit(1);
         }
-
-//        InputStream is = new FileInputStream(corpus);
 
         if (cmd.hasOption("n")) {
             n = Integer.parseInt(cmd.getOptionValue("n"));
@@ -107,18 +104,14 @@ public class PlaintextRecovery {
             System.out.println("Number of times key was reused set to the default value of " + keystreamReuse);
         }
 
+
         String stringCorpus = parse.fileToString(corpus);
-        System.out.println("corpus length " + stringCorpus.length());
+        System.out.println("corpus length: " + stringCorpus.length());
         ConcurrentHashMap<String, Integer> ngramModel;
         byte[] ciphertext = beam.getXOROfPlaintext(ptxtCandLength, keystreamReuse, stringCorpus);
         ngramModel = parse.processFiles(corpus, n);
         ConcurrentHashMap<String, Integer>[] mapArr = split.splitMap(ngramModel, n);
         HashMap<String, Double> languageModel = lm.createModel(mapArr, stringCorpus);
-
-//        System.out.println("vocab size " + languageModel.size());
-//        System.out.println(ngramModel);
-//        split.mapArrToString(mapArr);
-//        System.out.println("plaintext length: " + ciphertext.length);
 
         ArrayList<Tuple> candidates;
         candidates = beam.beamSearch(stringCorpus, mapArr, languageModel, n, pruneNumber, ciphertext);
