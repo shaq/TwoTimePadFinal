@@ -109,25 +109,24 @@ public class BeamSearch {
      * A method to returns the xor of k random plaintexts taken from the corpus.
      * This is then used to test the beam search algorithm.
      *
-     * @param ctxtLength : The chosen length of the ciphertext by the user.
-     * @param k          : The number of plaintexts to be XORed.
-     * @param corpus     : The corpus where the plaintexts are taken from.
-     * @return : the XOR of two random ciphertexts of length n.
+     * @param plaintexts : The array of plaintexts taken from a random position in the corpus.
+     * @param k : The number of times the keystream is reused.
+     * @return : The XOR of two random ciphertexts of length n.
      **/
-    public static byte[] getXOROfPlaintext(int ctxtLength, int k, String corpus) {
+    public static byte[] getXOROfPlaintext(String[] plaintexts, int k) {
 
-        String[] plaintexts = getPlaintextValues(ctxtLength, k, corpus);
         byte[][] xorOfPlaintexts = new byte[k][];
+        int ptxtLength = plaintexts[0].length();
 
         for (int i = 0; i < k; i++) {
             xorOfPlaintexts[i] = encodeStringToAscii(plaintexts[i]);
-            System.out.println("P" + i + " " + plaintexts[i]);
+//            System.out.println("P" + i + " " + plaintexts[i]);
         }
 
-        byte[] ptxtByteArr = new byte[ctxtLength];
+        byte[] ptxtByteArr = new byte[ptxtLength];
 
 
-        for (int i = 0; i < ctxtLength; i++) {
+        for (int i = 0; i < ptxtLength; i++) {
             byte tmp = 0;
             for (int j = 0; j < k; j++) {
                 tmp = (byte) (tmp ^ xorOfPlaintexts[j][i]);
