@@ -144,10 +144,10 @@ public class PlaintextRecovery {
         }
 
         String stringCorpus = parse.fileToString(corpus);
-        System.out.println("corpus length: " + stringCorpus.length());
+        System.out.println("\ncorpus length: " + stringCorpus.length() + "\n");
         ConcurrentHashMap<String, Integer> ngramModel;
         String[] plaintexts = beam.getPlaintextValues(ptxtCandLength, keystreamReuse, stringCorpus);
-        System.out.println("Plaintexts to recover:\n" + Arrays.toString(plaintexts));
+        System.out.println("\nPlaintexts to recover:\n" + Arrays.toString(plaintexts) + "\n");
         byte[] xorOfCiphertext = beam.getXOROfPlaintext(plaintexts, keystreamReuse);
         ngramModel = parse.processFiles(corpus, n);
         ConcurrentHashMap<String, Integer>[] mapArr = split.splitMap(ngramModel, n);
