@@ -80,10 +80,13 @@ public class PlaintextRecovery {
         Options options = new Options();
 
         options.addOption("n", true, "The maximum size of n-grams to be created.");
-        options.addOption("c", true, "The full path-name of the corpus to be used in the creation of the language model");
+        options.addOption("c", true, "The full path-name of the corpus to be used in the creation of the" +
+                "language model.");
         options.addOption("P", true, "The prune number used in the pruning operation during Beam Search.");
-        options.addOption("p", true, "The length of the xor of ciphertext (length of plaintext candidates)");
-        options.addOption("k", true, "How many times the keystream was re-used (either 2 or 3)");
+        options.addOption("p", true, "The length of the xor of ciphertext (length of plaintext candidates).");
+        options.addOption("k", true, "How many times the keystream was re-used (either 2 or 3).");
+        options.addOption("t", true, "The percentage of the possible plaintext candidates to search if the" +
+                " plaintexts have been recovered.");
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
@@ -93,6 +96,7 @@ public class PlaintextRecovery {
         int pruneNumber;
         int ptxtCandLength;
         int keystreamReuse;
+        int t;
 
         if (cmd.hasOption("c")) {
             String corpusPath = cmd.getOptionValue("c");
@@ -131,6 +135,13 @@ public class PlaintextRecovery {
             System.out.println("Number of times key was reused set to the default value of " + keystreamReuse);
         }
 
+        if(cmd.hasOption("t")) {
+            t = Integer.parseInt(cmd.getOptionValue("t"));
+        } else {
+            t = 10;
+            System.out.println("t set to the default value of " + t + ". Will search for recovered plaintexts in top" +
+                    t + "% of plaintext candidates list.");
+        }
 
         String stringCorpus = parse.fileToString(corpus);
         System.out.println("corpus length: " + stringCorpus.length());
@@ -146,7 +157,6 @@ public class PlaintextRecovery {
         candidates = beam.beamSearch(stringCorpus, mapArr, languageModel, n, pruneNumber, xorOfCiphertext);
         System.out.println("\n\nMost probable plaintext candidates:");
         getTopPlaintextCandidates(candidates);
-        int t = 1;
         System.out.println("\nRecovered plaintexts successfully in top " + t + "% of " + pruneNumber +
                 " possible candidates? " + recoveredPlaintextsSuccefully(plaintexts, candidates, t));
 
