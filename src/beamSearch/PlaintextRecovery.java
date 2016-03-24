@@ -7,12 +7,9 @@ import languageModel.Split;
 import org.apache.commons.cli.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -39,6 +36,36 @@ public class PlaintextRecovery {
         for (Tuple candidate : candidates) {
             System.out.println(candidate.toString());
         }
+    }
+
+    /**
+     * A method that checks if the plaintexts were recovered in the top t per-cent of candidates.
+     * @param plaintexts : The original plaintexts to recover.
+     * @param candidates : The list of plaintext candidates.
+     * @param t : The percentage of candidates to search to see if the plaintexts were recovered.
+     * @return : A boolean to indicate whether the plaintexts were recovered in the top t per-cent.
+     */
+    public static boolean recoveredPlaintextsSuccefully(String[] plaintexts, ArrayList<Tuple> candidates, int t) {
+        boolean recovered = false;
+        int numOfCands = candidates.size();
+        int topCands = (int)(numOfCands*(t/100.0f));
+
+        for (int i = 0; i < topCands; i++) {
+            Tuple tuple = candidates.get(i);
+            for (int j = 0; j < plaintexts.length; j++) {
+                if (tuple.getPlaintextOne().equals(plaintexts[j]) || tuple.getPlaintextTwo().equals(plaintexts[j])) {
+                    recovered = true;
+                } else {
+                    recovered = false;
+                }
+            }
+            if(recovered){
+                break;
+            }
+
+        }
+
+        return recovered;
     }
 
     /**
@@ -108,15 +135,20 @@ public class PlaintextRecovery {
         String stringCorpus = parse.fileToString(corpus);
         System.out.println("corpus length: " + stringCorpus.length());
         ConcurrentHashMap<String, Integer> ngramModel;
-        byte[] ciphertext = beam.getXOROfPlaintext(ptxtCandLength, keystreamReuse, stringCorpus);
+        String[] plaintexts = beam.getPlaintextValues(ptxtCandLength, keystreamReuse, stringCorpus);
+        System.out.println("Plaintexts to recover:\n" + Arrays.toString(plaintexts));
+        byte[] xorOfCiphertext = beam.getXOROfPlaintext(plaintexts, keystreamReuse);
         ngramModel = parse.processFiles(corpus, n);
         ConcurrentHashMap<String, Integer>[] mapArr = split.splitMap(ngramModel, n);
         HashMap<String, Double> languageModel = lm.createModel(mapArr, stringCorpus);
 
         ArrayList<Tuple> candidates;
-        candidates = beam.beamSearch(stringCorpus, mapArr, languageModel, n, pruneNumber, ciphertext);
+        candidates = beam.beamSearch(stringCorpus, mapArr, languageModel, n, pruneNumber, xorOfCiphertext);
         System.out.println("\n\nMost probable plaintext candidates:");
         getTopPlaintextCandidates(candidates);
+        int t = 1;
+        System.out.println("\nRecovered plaintexts successfully in top " + t + "% of " + pruneNumber +
+                " possible candidates? " + recoveredPlaintextsSuccefully(plaintexts, candidates, t));
 
     }
 
