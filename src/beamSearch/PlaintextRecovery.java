@@ -83,7 +83,7 @@ public class PlaintextRecovery {
         options.addOption("c", true, "The full path-name of the corpus to be used in the creation of the" +
                 "language model.");
         options.addOption("P", true, "The prune number used in the pruning operation during Beam Search.");
-        options.addOption("p", true, "The length of the xor of ciphertext (length of plaintext candidates).");
+        options.addOption("pl", true, "The length of the xor of ciphertext (length of plaintext candidates).");
         options.addOption("k", true, "How many times the keystream was re-used (either 2 or 3).");
         options.addOption("t", true, "The percentage of the possible plaintext candidates to search if the" +
                 " plaintexts have been recovered.");
@@ -114,8 +114,8 @@ public class PlaintextRecovery {
             System.out.println("n set to the default value of " + n);
         }
 
-        if (cmd.hasOption("p")) {
-            ptxtCandLength = Integer.parseInt(cmd.getOptionValue("p"));
+        if (cmd.hasOption("pl")) {
+            ptxtCandLength = Integer.parseInt(cmd.getOptionValue("pl"));
         } else {
             ptxtCandLength = 10;
             System.out.println("Length of the xor of ciphertexts set to default value of " + ptxtCandLength);
