@@ -77,19 +77,20 @@ public class PlaintextRecovery {
         // Command line options
         Options options = new Options();
 
-        options.addOption("n", true, "The maximum size of n-grams to be created.");
-        options.addOption("c", true, "The full path-name of the corpus to be used in the creation of the" +
-                "language model.");
+        options.addOption("n", true, "Specify the maximum size of n-grams that will be stored in the language model.");
+        options.addOption("c", true, "Specify the name of the corpus (file or directory) to train the language model.");
         options.addOption("P", true, "The prune number used in the pruning operation during Beam Search.");
         options.addOption("pl", true, "The length of the xor of ciphertext (length of plaintext candidates).");
         options.addOption("k", true, "How many times the keystream was re-used (either 2 or 3).");
-        options.addOption("t", true, "The percentage of the possible plaintext candidates to search if the" +
-                " plaintexts have been recovered.");
-        options.addOption("h", true, "Help option giving users details of options available and what they do.");
-        options.addOption("help", true, "Help option giving users details of options available and what they do.");
+        options.addOption("t", true, "The percentage of -P to search for actual plaintexts in the plaintext candidates.");
+        options.addOption("h", "Help option giving users details of options available and what they do.");
+        options.addOption("help", "Help option giving users details of options available and what they do.");
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
+
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp( "java -jar TwoTimePad.jar", options );
 
         File corpus = null;
         int n;
@@ -99,12 +100,6 @@ public class PlaintextRecovery {
         int t;
 
         if(cmd.hasOption("h") || cmd.hasOption("help")){
-            System.out.println("-n      Specify the maximum size of n-grams that will be stored in the language model.\n" +
-                    "-c     Specify the name of the corpus (file or directory) to train the language model.\n" +
-                    "-P     Specify the pruning number to be used during Beam Search operation.\n" +
-                    "-pl    Specify the length of the plaintext to be recovered.\n" +
-                    "-k     Specify how many times the keystream was re-used (either 2 or 3)\n" +
-                    "-t     Specify the percentage of -P to search for actual plaintexts in the plaintext candidates.");
             System.exit(0);
         }
 
@@ -113,7 +108,7 @@ public class PlaintextRecovery {
             System.out.println(corpusPath);
             corpus = new File(corpusPath);
         } else {
-            System.err.println("No corpus specified\n Use -h or -help for a help with possible options.");
+            System.err.println("You must specify a corpus.");
             System.exit(1);
         }
 
