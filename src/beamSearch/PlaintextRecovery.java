@@ -1,7 +1,6 @@
 package beamSearch;
 
 import languageModel.LanguageModel;
-import languageModel.NGram;
 import languageModel.ParseCorpus;
 import languageModel.Split;
 import org.apache.commons.cli.*;
@@ -24,7 +23,6 @@ public class PlaintextRecovery {
     public static BeamSearch beam = new BeamSearch();
     private static ParseCorpus parse = new ParseCorpus();
     private static LanguageModel lm = new LanguageModel();
-    private static NGram ngram = new NGram();
     private static Split split = new Split();
 
     /**
@@ -87,6 +85,8 @@ public class PlaintextRecovery {
         options.addOption("k", true, "How many times the keystream was re-used (either 2 or 3).");
         options.addOption("t", true, "The percentage of the possible plaintext candidates to search if the" +
                 " plaintexts have been recovered.");
+        options.addOption("h", true, "Help option giving users details of options available and what they do.");
+        options.addOption("help", true, "Help option giving users details of options available and what they do.");
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
@@ -98,12 +98,22 @@ public class PlaintextRecovery {
         int keystreamReuse;
         int t;
 
+        if(cmd.hasOption("h") || cmd.hasOption("help")){
+            System.out.println("-n      Specify the maximum size of n-grams that will be stored in the language model.\n" +
+                    "-c     Specify the name of the corpus (file or directory) to train the language model.\n" +
+                    "-P     Specify the pruning number to be used during Beam Search operation.\n" +
+                    "-pl    Specify the length of the plaintext to be recovered.\n" +
+                    "-k     Specify how many times the keystream was re-used (either 2 or 3)\n" +
+                    "-t     Specify the percentage of -P to search for actual plaintexts in the plaintext candidates.");
+            System.exit(0);
+        }
+
         if (cmd.hasOption("c")) {
             String corpusPath = cmd.getOptionValue("c");
             System.out.println(corpusPath);
             corpus = new File(corpusPath);
         } else {
-            System.err.println("No corpus specified");
+            System.err.println("No corpus specified\n Use -h or -help for a help with possible options.");
             System.exit(1);
         }
 
