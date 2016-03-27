@@ -100,6 +100,12 @@ public class PlaintextRecovery {
         int t;
 
         if(cmd.hasOption("h") || cmd.hasOption("help")){
+            System.out.println("-n      Specify the maximum size of n-grams that will be stored in the language model.\n" +
+                    "-c     Specify the name of the corpus (file or directory) to train the language model.\n" +
+                    "-P     Specify the pruning number to be used during Beam Search operation.\n" +
+                    "-pl    Specify the length of the plaintext to be recovered.\n" +
+                    "-k     Specify how many times the keystream was re-used (either 2 or 3)\n" +
+                    "-t     Specify the percentage of -P to search for actual plaintexts in the plaintext candidates.");
             System.exit(0);
         }
 

@@ -4,6 +4,7 @@ import beamSearch.Tuple;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class NGramModel {
 
@@ -30,6 +31,155 @@ public class NGramModel {
         Double nGramMLE = 0.0000001;
         return nGramMLE;
     }
+
+
+    public Double getD (int n1, int n2) {
+        double D = (n1 / (n1 + (2*n2)));
+        return D;
+    }
+
+    public Double knSmoothing (Map<String, Integer>[] mapArr, String key, Double D) {
+
+        int keyLength = key.length();
+        int keyCount;
+        int nMinusCount;
+        int mapIndex = keyLength - 1;
+
+        int precedeCount = 0;
+
+        if(keyLength == 1){
+
+            Map<String, Integer> bigrams = mapArr[1];
+            Set<Map.Entry<String, Integer>> bigramSet = bigrams.entrySet();
+
+            for(Map.Entry<String, Integer> entry : bigramSet) {
+                String bigram = entry.getKey();
+                if(bigram.endsWith(key)) {
+                    precedeCount++;
+                }
+            }
+
+            double knSmoothingEstimate = (precedeCount / bigrams.size());
+
+            return knSmoothingEstimate;
+
+        } else {
+
+            // Map of n-grams with the same length as 'key'.
+            Map<String, Integer> keyLengthNGrams = mapArr[mapIndex];
+
+            // Number of different n-grams in the corpus that can follow the (n-1)-gram ().
+            int followCount = 0;
+
+            HashMap<String, Integer> ngrams = new HashMap<>();
+
+            for (int map = 0; map < mapIndex; map++) {
+                ngrams.putAll(mapArr[map]);
+            }
+
+            String nMinusGram = key.substring(0, mapIndex);
+
+            if(ngrams.containsKey(key)) {
+                keyCount = ngrams.get(key);
+            } else {
+                keyCount = 0;
+            }
+
+            if(ngrams.containsKey(nMinusGram)) {
+                nMinusCount = ngrams.get(nMinusGram);
+            } else {
+                nMinusCount = 0;
+            }
+
+            // The first term is kneser-ney.
+            double discountedCount = (Math.max((double)keyCount - D, 0f) / nMinusCount);
+
+            // Entry set of all n-grams with the same length as the 'key'.
+            Set<Map.Entry<String, Integer>> klNGramsSet = keyLengthNGrams.entrySet();
+
+            for (Map.Entry<String, Integer> entry : klNGramsSet) {
+                String ngram = entry.getKey();
+                if (ngram.startsWith(nMinusGram)) {
+                    followCount++;
+                }
+            }
+
+            double lambda = ((D / nMinusCount) * followCount);
+            String lowerOrderNGram = key.substring(keyLength - (keyLength - 1), keyLength);
+
+            double knSmoothingEstimate = discountedCount + (lambda * knSmoothing(mapArr, lowerOrderNGram, D));
+
+            return knSmoothingEstimate;
+        }
+
+    }
+
+/*    public Double getDOne (int n1, int n2, Double D) {
+        double dOne = (1 - (2*D*(n2/n1)));
+        return dOne;
+    }
+
+    public Double getDTwo (int n2, int n3, Double D) {
+        double dTwo = (2 - (3*D*(n3/n2)));
+        return dTwo;
+    }
+
+    public Double getDThree (int n3, int n4, Double D) {
+        double dThree = (3 - (4*D*(n4 / n3)));
+        return dThree;
+    }
+
+    public Double getDForNGram (Map<String, Integer> ngrams, String n_minus_gram, Integer n1, Integer n2, Integer n3,
+                        Integer n4) {
+
+        double D = getD(n1, n2);
+
+        if (ngrams.get(n_minus_gram) == null) {
+            D = 0;
+        } else if (ngrams.get(n_minus_gram) == 1) {
+            D = getDOne(n1, n2, D);
+        } else if (ngrams.get(n_minus_gram) == 2) {
+            D = getDTwo(n2, n3, D);
+        } else if (ngrams.get(n_minus_gram) > 2) {
+            D = getDThree(n3, n4, D);
+        }
+
+        return D;
+    }
+
+    public Double mknSmoothing(Map<String, Integer>[] mapArr, String key, Integer n1, Integer n2, Integer n3,
+                               Integer n4){
+
+        String n_minus_gram = key.substring(0, key.length() - 1);
+        int keyLength = key.length();
+        int keycount = 0;
+        int mapIndex = keyLength - 1;
+        Map<String, Integer> keyLengthNGrams = mapArr[mapIndex];
+
+        HashMap<String, Integer> ngrams = new HashMap<>();
+
+        for (int map = 0; map < mapIndex; map++) {
+            ngrams.putAll(mapArr[map]);
+        }
+
+        if(ngrams.containsKey(key)) {
+            keycount = ngrams.get(key);
+        } else {
+            keycount = 0;
+        }
+
+        int precedeCount = 0;
+
+
+
+        Set<Map.Entry<String, Integer>> entries = ngrams.entrySet();
+
+        for(Map.Entry<String, Integer> entry : entries) {
+            if(entry.getValue() == 1) {
+
+            }
+        }
+    }*/
 
     /**
      * A method that implements laplace smoothing.
