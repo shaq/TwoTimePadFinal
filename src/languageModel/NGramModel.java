@@ -34,11 +34,12 @@ public class NGramModel {
 
 
     public Double getD (int n1, int n2) {
-        double D = (n1 / (n1 + (2*n2)));
-        return D;
+        double n_1 = (double)n1;
+        double n_2 = (double)n2;
+        return n_1 / (n_1 + (2*n_2));
     }
 
-    public Double knSmoothing (Map<String, Integer>[] mapArr, String key, Double D) {
+    public Double knSmoothing (Map<String, Integer>[] mapArr, Map<String, Integer> ngrams, String key, Double D) {
 
         int keyLength = key.length();
         int keyCount;
@@ -71,11 +72,11 @@ public class NGramModel {
             // Number of different n-grams in the corpus that can follow the (n-1)-gram ().
             int followCount = 0;
 
-            HashMap<String, Integer> ngrams = new HashMap<>();
-
-            for (int map = 0; map < mapIndex; map++) {
-                ngrams.putAll(mapArr[map]);
-            }
+//            HashMap<String, Integer> ngrams = new HashMap<>();
+//
+//            for (int map = 0; map < ngrams.; map++) {
+//                ngrams.putAll(mapArr[map]);
+//            }
 
             String nMinusGram = key.substring(0, mapIndex);
 
@@ -91,8 +92,11 @@ public class NGramModel {
                 nMinusCount = 0;
             }
 
+//            System.out.println("keycount of " + key + "= " + keyCount + "\n");
+
             // The first term is kneser-ney.
             double discountedCount = (Math.max((double)keyCount - D, 0f) / nMinusCount);
+//            System.out.println("discountedCount of " + key + "= " + discountedCount + "\n");
 
             // Entry set of all n-grams with the same length as the 'key'.
             Set<Map.Entry<String, Integer>> klNGramsSet = keyLengthNGrams.entrySet();
@@ -105,9 +109,10 @@ public class NGramModel {
             }
 
             double lambda = ((D / nMinusCount) * followCount);
+//            System.out.println("lambda of " + key + "= " + lambda + "\n");
             String lowerOrderNGram = key.substring(keyLength - (keyLength - 1), keyLength);
 
-            double knSmoothingEstimate = discountedCount + (lambda * knSmoothing(mapArr, lowerOrderNGram, D));
+            double knSmoothingEstimate = discountedCount + (lambda * knSmoothing(mapArr, ngrams,lowerOrderNGram, D));
 
             return knSmoothingEstimate;
         }

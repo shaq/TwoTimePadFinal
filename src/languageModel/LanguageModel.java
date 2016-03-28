@@ -25,13 +25,38 @@ public class LanguageModel {
         HashMap<String, Double> languageModel = new HashMap<>();
         Double probEstimate;
 
+        int n1 = 0;
+        int n2 = 0;
+
+        HashMap<String, Integer> ngrams = new HashMap<>();
+        for(int map = 0; map < mapArr.length; map++) {
+            ngrams.putAll(mapArr[map]);
+        }
+
+        Set<Map.Entry<String, Integer>> entries = ngrams.entrySet();
+
+        for (Map.Entry<String, Integer> entry : entries) {
+            Integer count = entry.getValue();
+            if (count == 1) {
+                n1++;
+            } else if (count == 2) {
+                n2++;
+            }
+        }
+
+        System.out.println("n1 = " + n1 + " , n2 = " + n2);
+
+        Double D = model.getD(n1, n2);
+        System.out.println("D = " + D);
+
         for(int map = 0; map < mapArr.length; map++){
-            Map<String, Integer> tmpMap = mapArr[map];
-            Set<Map.Entry<String, Integer>> entries = tmpMap.entrySet();
+//            Map<String, Integer> tmpMap = mapArr[map];
+//            Set<Map.Entry<String, Integer>> entries = tmpMap.entrySet();
 
             for(Map.Entry<String, Integer> e : entries){
                 String ngram = e.getKey();
-                probEstimate = model.laplaceSmoothing(mapArr, ngram, corpus, vocabSize);
+                probEstimate = model.knSmoothing(mapArr, ngrams, ngram, D);
+//                probEstimate = model.laplaceSmoothing(mapArr, ngram, corpus, vocabSize);
                 languageModel.put(ngram, probEstimate);
             }
 

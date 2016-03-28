@@ -157,19 +157,21 @@ public class PlaintextRecovery {
         String stringCorpus = parse.fileToString(corpus);
         System.out.println("\ncorpus length: " + stringCorpus.length() + "\n");
         ConcurrentHashMap<String, Integer> ngramModel;
-        String[] plaintexts = beam.getPlaintextValues(ptxtCandLength, keystreamReuse, stringCorpus);
-        System.out.println("\nPlaintexts to recover:\n" + Arrays.toString(plaintexts) + "\n");
-        byte[] xorOfCiphertext = beam.getXOROfPlaintext(plaintexts, keystreamReuse);
+//        String[] plaintexts = beam.getPlaintextValues(ptxtCandLength, keystreamReuse, stringCorpus);
+//        System.out.println("\nPlaintexts to recover:\n" + Arrays.toString(plaintexts) + "\n");
+//        byte[] xorOfCiphertext = beam.getXOROfPlaintext(plaintexts, keystreamReuse);
         ngramModel = parse.processFiles(corpus, n);
         ConcurrentHashMap<String, Integer>[] mapArr = split.splitMap(ngramModel, n);
         HashMap<String, Double> languageModel = lm.createModel(mapArr, stringCorpus);
 
-        ArrayList<Tuple> candidates;
-        candidates = beam.beamSearch(stringCorpus, mapArr, languageModel, n, pruneNumber, xorOfCiphertext);
-        System.out.println("\n\nMost probable plaintext candidates:");
-        getTopPlaintextCandidates(candidates);
-        System.out.println("\nRecovered plaintexts successfully in top " + t + "% of " + pruneNumber +
-                " possible candidates? " + recoveredPlaintextsSuccefully(plaintexts, candidates, t));
+//        System.out.println("-------------------------- LANGUAGE MODEL --------------------------\n\n" + languageModel);
+
+//        ArrayList<Tuple> candidates;
+//        candidates = beam.beamSearch(stringCorpus, mapArr, languageModel, n, pruneNumber, xorOfCiphertext);
+//        System.out.println("\n\nMost probable plaintext candidates:");
+//        getTopPlaintextCandidates(candidates);
+//        System.out.println("\nRecovered plaintexts successfully in top " + t + "% of " + pruneNumber +
+//                " possible candidates? " + recoveredPlaintextsSuccefully(plaintexts, candidates, t));
 
     }
 
