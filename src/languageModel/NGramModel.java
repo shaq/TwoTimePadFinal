@@ -33,10 +33,32 @@ public class NGramModel {
     }
 
 
-    public Double getD (int n1, int n2) {
+    public Double getD (Map<String, Integer> ngrams) {
+
+        int n1 = 0;
+        int n2 = 0;
+
+
+        Set<Map.Entry<String, Integer>> entries = ngrams.entrySet();
+
+        for (Map.Entry<String, Integer> entry : entries) {
+            Integer count = entry.getValue();
+            if (count == 1) {
+                n1++;
+            } else if (count == 2) {
+                n2++;
+            }
+        }
+
+        System.out.println("n1 = " + n1 + " , n2 = " + n2);
+
         double n_1 = (double)n1;
         double n_2 = (double)n2;
-        return n_1 / (n_1 + (2*n_2));
+
+        Double D = n_1 / (n_1 + (2*n_2));
+        System.out.println("D = " + D);
+
+        return D;
     }
 
     public Double knSmoothing (Map<String, Integer>[] mapArr, Map<String, Integer> ngrams, String key, Double D) {
@@ -45,10 +67,11 @@ public class NGramModel {
         int keyCount;
         int nMinusCount;
         int mapIndex = keyLength - 1;
+        Double knSmoothingEstimate = 0.0;
 
         int precedeCount = 0;
 
-        if(keyLength == 1){
+        if(keyLength <= 1){
 
             Map<String, Integer> bigrams = mapArr[1];
             Set<Map.Entry<String, Integer>> bigramSet = bigrams.entrySet();
@@ -60,14 +83,16 @@ public class NGramModel {
                 }
             }
 
-            double knSmoothingEstimate = (precedeCount / bigrams.size());
-
-            return knSmoothingEstimate;
+            knSmoothingEstimate = ((double)precedeCount / (double)bigrams.size());
+            System.out.println("smoothing estimate of "+ key + "= " + knSmoothingEstimate);
 
         } else {
 
             // Map of n-grams with the same length as 'key'.
-            Map<String, Integer> keyLengthNGrams = mapArr[mapIndex];
+//            Map<String, Integer> keyLengthNGrams = mapArr[key.length() - 1];
+
+            // Map of (n-1)-grams.
+//            Map<String, Integer> keyLenghtNMinusOneGrams = mapArr[mapIndex - 1];
 
             // Number of different n-grams in the corpus that can follow the (n-1)-gram ().
             int followCount = 0;
@@ -95,11 +120,11 @@ public class NGramModel {
 //            System.out.println("keycount of " + key + "= " + keyCount + "\n");
 
             // The first term is kneser-ney.
-            double discountedCount = (Math.max((double)keyCount - D, 0f) / nMinusCount);
-//            System.out.println("discountedCount of " + key + "= " + discountedCount + "\n");
+            double discountedNormalizedCount = (Math.max((double)keyCount - D, 0f) / (double)nMinusCount);
+//            System.out.println("discountedNormalizedCount of " + key + "= " + discountedCount + "\n");
 
             // Entry set of all n-grams with the same length as the 'key'.
-            Set<Map.Entry<String, Integer>> klNGramsSet = keyLengthNGrams.entrySet();
+            Set<Map.Entry<String, Integer>> klNGramsSet = ngrams.entrySet();
 
             for (Map.Entry<String, Integer> entry : klNGramsSet) {
                 String ngram = entry.getKey();
@@ -108,14 +133,18 @@ public class NGramModel {
                 }
             }
 
-            double lambda = ((D / nMinusCount) * followCount);
+            double lambda = ((D / (double)nMinusCount) * (double)followCount);
 //            System.out.println("lambda of " + key + "= " + lambda + "\n");
             String lowerOrderNGram = key.substring(keyLength - (keyLength - 1), keyLength);
 
-            double knSmoothingEstimate = discountedCount + (lambda * knSmoothing(mapArr, ngrams,lowerOrderNGram, D));
+            knSmoothingEstimate = discountedNormalizedCount +
+                    (lambda * knSmoothing(mapArr, ngrams, lowerOrderNGram, D));
 
-            return knSmoothingEstimate;
         }
+
+        System.out.println("precedeCount = " + precedeCount);
+        System.out.println("smoothing estimate of "+ key + "= " + knSmoothingEstimate);
+        return knSmoothingEstimate;
 
     }
 
@@ -240,14 +269,16 @@ public class NGramModel {
      * A method which calculates the candidate probability to be used in the implementation of Beam Search.
      * @param n : The maximum size of n-grams taken from corpus.
      * @param corpus : The corpus as a string.
-     * @param ngrams : An array of all n-grams taken from the corpus.
+     * @param mapArr : An array of all n-grams taken from the corpus.
      * @param languageModel : The language model for a given corpus.
      * @param candidate : The candidate this method calculates the probability of.
      * @param vocabSize : The number of all n-grams in the language model.
      * @return : The log probabilities of the two plaintexts in the given candidate returned as a double.
      */
-    public Double[] calculateCandidateProbability(int n, String corpus, Map<String, Integer>[] ngrams, HashMap<String,
-            Double> languageModel, Tuple candidate, String plaintext_one, String plaintext_two,int vocabSize) {
+    public Double[] calculateCandidateProbability(int n, String corpus, Map<String, Integer>[] mapArr,
+                                                  Map<String, Integer> ngrams, HashMap<String, Double> languageModel,
+                                                  Tuple candidate, String plaintext_one, String plaintext_two,
+                                                  int vocabSize, Double D) {
 
         String p_one_ngram;
         String p_two_ngram;
@@ -262,7 +293,8 @@ public class NGramModel {
 
         int p_length = plaintext_one.length();
 
-//        System.out.println(p_length);
+        System.out.println("---------------------------------------------------------------------------");
+        System.out.println("plaintext length = " + p_length);
         // Logic used to control of the initialisation of the ngrams and
         // (n-1)grams to be used in the probability
         // logic below.
@@ -292,39 +324,45 @@ public class NGramModel {
         if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
                 !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
-            p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
-            p_one_nminus_prob = Math.log(estimateProbability(ngrams, pOne_n_minus_one_gram, corpus, vocabSize));
-            p_two_nminus_prob = Math.log(estimateProbability(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize));
-//            System.out.println("both not in lm");
+            p_one_prob = Math.log(knSmoothing(mapArr, ngrams, p_one_ngram, D));
+            p_two_prob = Math.log(knSmoothing(mapArr, ngrams, p_two_ngram, D));
+            p_one_nminus_prob = Math.log(knSmoothing(mapArr, ngrams, pOne_n_minus_one_gram, D));
+            p_two_nminus_prob = Math.log(knSmoothing(mapArr, ngrams, pTwo_n_minus_one_gram, D));
+            System.out.println("both not in lm");
+
         } else if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
                 languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
-            p_one_nminus_prob = Math.log(estimateProbability(ngrams, pOne_n_minus_one_gram, corpus, vocabSize));
+            p_one_prob = Math.log(knSmoothing(mapArr, ngrams, p_one_ngram, D));
+            p_one_nminus_prob = Math.log(knSmoothing(mapArr, ngrams, pOne_n_minus_one_gram, D));
             p_two_nminus_prob = Math.log(languageModel.get(pTwo_n_minus_one_gram));
 
             if (languageModel.containsKey(p_two_ngram)) {
                 p_two_prob = Math.log(languageModel.get(p_two_ngram));
+                System.out.println("p1 not in lm");
             } else {
-                p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
+                p_two_prob = Math.log(knSmoothing(mapArr, ngrams, p_two_ngram, D));
+                System.out.println("both not in lm");
             }
 
-//            System.out.println("p1 not in lm");
+
+
         } else if (languageModel.containsKey(pOne_n_minus_one_gram) &&
                 !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
-            p_two_nminus_prob = Math.log(estimateProbability(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize));
+            p_two_prob = Math.log(knSmoothing(mapArr, ngrams, p_two_ngram, D));
+            p_two_nminus_prob = Math.log(knSmoothing(mapArr, ngrams, pTwo_n_minus_one_gram, D));
             p_one_nminus_prob = Math.log(languageModel.get(pOne_n_minus_one_gram));
 
             if (languageModel.containsKey(p_one_ngram)) {
                 p_one_prob = Math.log(languageModel.get(p_one_ngram));
+                System.out.println("p2 not in lm");
             } else {
-                p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
+                p_one_prob = Math.log(knSmoothing(mapArr, ngrams, p_one_ngram, D));
+                System.out.println("both not in lm");
             }
 
-//            System.out.println("p2 not in lm");
+
         } else {
 
             p_one_nminus_prob = Math.log(languageModel.get(pOne_n_minus_one_gram));
@@ -333,20 +371,34 @@ public class NGramModel {
             if (languageModel.containsKey(p_one_ngram)) {
                 p_one_prob = Math.log(languageModel.get(p_one_ngram));
             } else {
-                p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
+                p_one_prob = Math.log(knSmoothing(mapArr, ngrams, p_one_ngram, D));
             }
 
             if (languageModel.containsKey(p_two_ngram)) {
                 p_two_prob = Math.log(languageModel.get(p_two_ngram));
+                System.out.println("both in lm");
             } else {
-                p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
+                p_two_prob = Math.log(knSmoothing(mapArr, ngrams, p_two_ngram, D));
+                System.out.println("p2 not in lm");
+
             }
 
-//            System.out.println("both in lm");
+
         }
 
         cand_prob_one = candidate.getProbOne() + p_one_prob - p_one_nminus_prob;
         cand_prob_two = candidate.getProbTwo() + p_two_prob - p_two_nminus_prob;
+
+//        cand_prob_one = knSmoothing(mapArr, ngrams, p_one_ngram, D);
+//        cand_prob_two = knSmoothing(mapArr, ngrams, p_two_ngram, D);
+
+        System.out.print("candidate probability 1 = " + candidate.getProbOne() + " ");
+        System.out.println("candidate probability 2 = " + candidate.getProbTwo());
+        System.out.println("p_one_prob = " + p_one_prob + "\n p_two_prob = " + p_two_prob);
+        System.out.println("p_one_nminus_prob = " + p_one_nminus_prob + "\n p_two_nminus_prob = " + p_two_nminus_prob);
+        System.out.println("cand prob of P1: " + plaintext_one + "= " + cand_prob_one);
+        System.out.println("cand prob of P2: " + plaintext_two + "= " + cand_prob_two);
+
 
         return new Double[]{cand_prob_one, cand_prob_two};
     }

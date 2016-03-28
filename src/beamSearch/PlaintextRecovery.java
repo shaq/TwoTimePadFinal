@@ -1,6 +1,7 @@
 package beamSearch;
 
 import languageModel.LanguageModel;
+import languageModel.NGramModel;
 import languageModel.ParseCorpus;
 import languageModel.Split;
 import org.apache.commons.cli.*;
@@ -23,6 +24,7 @@ public class PlaintextRecovery {
     public static BeamSearch beam = new BeamSearch();
     private static ParseCorpus parse = new ParseCorpus();
     private static LanguageModel lm = new LanguageModel();
+    private static NGramModel model = new NGramModel();
     private static Split split = new Split();
 
     /**
@@ -157,21 +159,22 @@ public class PlaintextRecovery {
         String stringCorpus = parse.fileToString(corpus);
         System.out.println("\ncorpus length: " + stringCorpus.length() + "\n");
         ConcurrentHashMap<String, Integer> ngramModel;
-//        String[] plaintexts = beam.getPlaintextValues(ptxtCandLength, keystreamReuse, stringCorpus);
-//        System.out.println("\nPlaintexts to recover:\n" + Arrays.toString(plaintexts) + "\n");
-//        byte[] xorOfCiphertext = beam.getXOROfPlaintext(plaintexts, keystreamReuse);
+        String[] plaintexts = beam.getPlaintextValues(ptxtCandLength, keystreamReuse, stringCorpus);
+        System.out.println("\nPlaintexts to recover:\n" + Arrays.toString(plaintexts) + "\n");
+        byte[] xorOfCiphertext = beam.getXOROfPlaintext(plaintexts, keystreamReuse);
         ngramModel = parse.processFiles(corpus, n);
+        Double D = model.getD(ngramModel);
         ConcurrentHashMap<String, Integer>[] mapArr = split.splitMap(ngramModel, n);
-        HashMap<String, Double> languageModel = lm.createModel(mapArr, stringCorpus);
+        HashMap<String, Double> languageModel = lm.createModel(mapArr, ngramModel, stringCorpus, D);
 
 //        System.out.println("-------------------------- LANGUAGE MODEL --------------------------\n\n" + languageModel);
 
-//        ArrayList<Tuple> candidates;
-//        candidates = beam.beamSearch(stringCorpus, mapArr, languageModel, n, pruneNumber, xorOfCiphertext);
-//        System.out.println("\n\nMost probable plaintext candidates:");
-//        getTopPlaintextCandidates(candidates);
-//        System.out.println("\nRecovered plaintexts successfully in top " + t + "% of " + pruneNumber +
-//                " possible candidates? " + recoveredPlaintextsSuccefully(plaintexts, candidates, t));
+        ArrayList<Tuple> candidates;
+        candidates = beam.beamSearch(stringCorpus, mapArr, ngramModel, languageModel, n, pruneNumber, xorOfCiphertext, D);
+        System.out.println("\n\nMost probable plaintext candidates:");
+        getTopPlaintextCandidates(candidates);
+        System.out.println("\nRecovered plaintexts successfully in top " + t + "% of " + pruneNumber +
+                " possible candidates? " + recoveredPlaintextsSuccefully(plaintexts, candidates, t));
 
     }
 

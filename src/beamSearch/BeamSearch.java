@@ -150,8 +150,9 @@ public class BeamSearch {
      * @param ciphertext    : The XOR of two ciphertexts, of which we are trying to recover the plaintexts.
      * @return candidates : The list of top candidate ciphertexts returned as a result of the algorithm.
      **/
-    public ArrayList<Tuple> beamSearch(String corpus, Map<String, Integer>[] ngramArr, HashMap<String,
-            Double> languageModel, int n, int pruneNumber, byte[] ciphertext) {
+    public ArrayList<Tuple> beamSearch(String corpus, Map<String, Integer>[] ngramArr, Map<String, Integer> ngrams,
+                                       HashMap<String, Double> languageModel, int n, int pruneNumber, byte[] ciphertext,
+                                       Double D) {
 
 
         // Adding the log probability of the empty string to the language model.
@@ -162,6 +163,8 @@ public class BeamSearch {
         // The two candidate strings to be used repeatedly in the algorithm.
         String plaintext_one;
         String plaintext_two;
+        Double candProbOne;
+        Double candProbTwo;
         char p_one_next;
         char p_two_next;
         int vocabSize = model.getVocabSize(ngramArr);
@@ -194,7 +197,6 @@ public class BeamSearch {
 
                     p_one_next = (char) printableAscii[ascii];
 
-
                     // By using our character in p_one_next and the character at 'position' in the ciphertext, we can
                     // obtain the unique candidate for p_two_next, since p_one_next XOR p_two_next must equal the
                     // character of the ciphertext at 'position'.
@@ -206,11 +208,14 @@ public class BeamSearch {
 
                     // Calculating the probability of each plaintext in the current candidate and storing themm in
                     // an array.
-                    Double[] candProb = model.calculateCandidateProbability(n, corpus, ngramArr, languageModel, t,
-                            plaintext_one, plaintext_two, vocabSize);
+                    Double[] candProb = model.calculateCandidateProbability(n, corpus, ngramArr, ngrams, languageModel,
+                            t, plaintext_one, plaintext_two, vocabSize, D);
 
                     temp.add(new Tuple(plaintext_one, plaintext_two, candProb[0], candProb[1]));
-
+//                    candProbOne = model.knSmoothing(ngramArr, plaintext_one, D);
+//                    candProbTwo = model.knSmoothing(ngramArr, plaintext_two, D);
+//
+//                    temp.add(new Tuple(plaintext_one, plaintext_two, candProbOne, candProbTwo));
                 }
 
             }
