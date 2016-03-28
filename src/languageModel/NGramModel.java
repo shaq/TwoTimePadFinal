@@ -84,7 +84,7 @@ public class NGramModel {
             }
 
             knSmoothingEstimate = ((double)precedeCount / (double)bigrams.size());
-            System.out.println("smoothing estimate of "+ key + "= " + knSmoothingEstimate);
+//            System.out.println("smoothing estimate of "+ key + "= " + knSmoothingEstimate);
 
         } else {
 
@@ -137,13 +137,13 @@ public class NGramModel {
 //            System.out.println("lambda of " + key + "= " + lambda + "\n");
             String lowerOrderNGram = key.substring(keyLength - (keyLength - 1), keyLength);
 
-            knSmoothingEstimate = discountedNormalizedCount +
-                    (lambda * knSmoothing(mapArr, ngrams, lowerOrderNGram, D));
+            double lowerOrderProbability = knSmoothing(mapArr, ngrams, lowerOrderNGram, D);
+            knSmoothingEstimate = discountedNormalizedCount + (lambda * lowerOrderProbability);
 
         }
 
-        System.out.println("precedeCount = " + precedeCount);
-        System.out.println("smoothing estimate of "+ key + "= " + knSmoothingEstimate);
+//        System.out.println("precedeCount = " + precedeCount);
+//        System.out.println("smoothing estimate of "+ key + "= " + knSmoothingEstimate);
         return knSmoothingEstimate;
 
     }
@@ -324,24 +324,24 @@ public class NGramModel {
         if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
                 !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_one_prob = Math.log(knSmoothing(mapArr, ngrams, p_one_ngram, D));
-            p_two_prob = Math.log(knSmoothing(mapArr, ngrams, p_two_ngram, D));
-            p_one_nminus_prob = Math.log(knSmoothing(mapArr, ngrams, pOne_n_minus_one_gram, D));
-            p_two_nminus_prob = Math.log(knSmoothing(mapArr, ngrams, pTwo_n_minus_one_gram, D));
+            p_one_prob = knSmoothing(mapArr, ngrams, p_one_ngram, D);
+            p_two_prob = knSmoothing(mapArr, ngrams, p_two_ngram, D);
+            p_one_nminus_prob = knSmoothing(mapArr, ngrams, pOne_n_minus_one_gram, D);
+            p_two_nminus_prob = knSmoothing(mapArr, ngrams, pTwo_n_minus_one_gram, D);
             System.out.println("both not in lm");
 
         } else if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
                 languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_one_prob = Math.log(knSmoothing(mapArr, ngrams, p_one_ngram, D));
-            p_one_nminus_prob = Math.log(knSmoothing(mapArr, ngrams, pOne_n_minus_one_gram, D));
-            p_two_nminus_prob = Math.log(languageModel.get(pTwo_n_minus_one_gram));
+            p_one_prob = knSmoothing(mapArr, ngrams, p_one_ngram, D);
+            p_one_nminus_prob = knSmoothing(mapArr, ngrams, pOne_n_minus_one_gram, D);
+            p_two_nminus_prob = languageModel.get(pTwo_n_minus_one_gram);
 
             if (languageModel.containsKey(p_two_ngram)) {
-                p_two_prob = Math.log(languageModel.get(p_two_ngram));
+                p_two_prob = languageModel.get(p_two_ngram);
                 System.out.println("p1 not in lm");
             } else {
-                p_two_prob = Math.log(knSmoothing(mapArr, ngrams, p_two_ngram, D));
+                p_two_prob = knSmoothing(mapArr, ngrams, p_two_ngram, D);
                 System.out.println("both not in lm");
             }
 
@@ -350,52 +350,56 @@ public class NGramModel {
         } else if (languageModel.containsKey(pOne_n_minus_one_gram) &&
                 !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_two_prob = Math.log(knSmoothing(mapArr, ngrams, p_two_ngram, D));
-            p_two_nminus_prob = Math.log(knSmoothing(mapArr, ngrams, pTwo_n_minus_one_gram, D));
-            p_one_nminus_prob = Math.log(languageModel.get(pOne_n_minus_one_gram));
+            p_two_prob = knSmoothing(mapArr, ngrams, p_two_ngram, D);
+            p_two_nminus_prob = knSmoothing(mapArr, ngrams, pTwo_n_minus_one_gram, D);
+            p_one_nminus_prob = languageModel.get(pOne_n_minus_one_gram);
 
             if (languageModel.containsKey(p_one_ngram)) {
-                p_one_prob = Math.log(languageModel.get(p_one_ngram));
+                p_one_prob = languageModel.get(p_one_ngram);
                 System.out.println("p2 not in lm");
             } else {
-                p_one_prob = Math.log(knSmoothing(mapArr, ngrams, p_one_ngram, D));
+                p_one_prob = knSmoothing(mapArr, ngrams, p_one_ngram, D);
                 System.out.println("both not in lm");
             }
 
 
         } else {
 
-            p_one_nminus_prob = Math.log(languageModel.get(pOne_n_minus_one_gram));
-            p_two_nminus_prob = Math.log(languageModel.get(pTwo_n_minus_one_gram));
+            p_one_nminus_prob = languageModel.get(pOne_n_minus_one_gram);
+            p_two_nminus_prob = languageModel.get(pTwo_n_minus_one_gram);
 
             if (languageModel.containsKey(p_one_ngram)) {
-                p_one_prob = Math.log(languageModel.get(p_one_ngram));
+                System.out.println("lm contains +++++ p1=" + languageModel.get(p_one_ngram));
+                p_one_prob = languageModel.get(p_one_ngram);
             } else {
-                p_one_prob = Math.log(knSmoothing(mapArr, ngrams, p_one_ngram, D));
+                double kn = knSmoothing(mapArr, ngrams, p_one_ngram, D);
+                System.out.println("lm not contains +++++ p1kn=" + kn);
+                p_one_prob = kn;
             }
 
             if (languageModel.containsKey(p_two_ngram)) {
-                p_two_prob = Math.log(languageModel.get(p_two_ngram));
+                System.out.println("lm contains +++++ p2=" + languageModel.get(p_two_ngram));
+                p_two_prob = languageModel.get(p_two_ngram);
                 System.out.println("both in lm");
             } else {
-                p_two_prob = Math.log(knSmoothing(mapArr, ngrams, p_two_ngram, D));
-                System.out.println("p2 not in lm");
+                p_two_prob = knSmoothing(mapArr, ngrams, p_two_ngram, D);
+                System.out.println("p2 not in lm £££££");
 
             }
 
 
         }
 
-        cand_prob_one = candidate.getProbOne() + p_one_prob - p_one_nminus_prob;
-        cand_prob_two = candidate.getProbTwo() + p_two_prob - p_two_nminus_prob;
+        cand_prob_one = (candidate.getProbOne() * p_one_prob) / p_one_nminus_prob;
+        cand_prob_two = (candidate.getProbTwo() * p_two_prob) / p_two_nminus_prob;
 
 //        cand_prob_one = knSmoothing(mapArr, ngrams, p_one_ngram, D);
 //        cand_prob_two = knSmoothing(mapArr, ngrams, p_two_ngram, D);
 
-        System.out.print("candidate probability 1 = " + candidate.getProbOne() + " ");
+        System.out.print("candidate probability 1 = " + candidate.getProbOne() + "\n");
         System.out.println("candidate probability 2 = " + candidate.getProbTwo());
-        System.out.println("p_one_prob = " + p_one_prob + "\n p_two_prob = " + p_two_prob);
-        System.out.println("p_one_nminus_prob = " + p_one_nminus_prob + "\n p_two_nminus_prob = " + p_two_nminus_prob);
+        System.out.println("p_one_prob = " + p_one_prob + "\np_two_prob = " + p_two_prob);
+        System.out.println("p_one_nminus_prob = " + p_one_nminus_prob + "\np_two_nminus_prob = " + p_two_nminus_prob);
         System.out.println("cand prob of P1: " + plaintext_one + "= " + cand_prob_one);
         System.out.println("cand prob of P2: " + plaintext_two + "= " + cand_prob_two);
 

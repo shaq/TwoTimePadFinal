@@ -176,7 +176,7 @@ public class BeamSearch {
 
         // Setting all the candidates to initially have empty strings and 0 log probability.
         for (int ascii = 0; ascii < printableAscii.length; ascii++) {
-            candidates.add(new Tuple("", "", Math.log(emptyStringProb), Math.log(emptyStringProb)));
+            candidates.add(new Tuple("", "", emptyStringProb, emptyStringProb));
         }
 
         // The main loop controlling the building of the candidates.
@@ -224,8 +224,8 @@ public class BeamSearch {
             Collections.sort(temp, new Comparator<Tuple>() {
                 @Override
                 public int compare(Tuple t1, Tuple t2) {
-                    Double t1_perc = t1.getProbOne() + t1.getProbTwo();
-                    Double t2_perc = t2.getProbOne() + t2.getProbTwo();
+                    Double t1_perc = t1.getProbOne() * t1.getProbTwo();
+                    Double t2_perc = t2.getProbOne() * t2.getProbTwo();
                     return Double.compare(t1_perc, t2_perc);
                 }
 
@@ -243,6 +243,8 @@ public class BeamSearch {
             }
 
             candidates = temp;
+
+            System.out.println("------------- CANDIDATES -------------\n" + candidates);
 
         }
 
