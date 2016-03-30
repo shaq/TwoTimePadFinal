@@ -208,6 +208,10 @@ public class BeamSearch {
                     // an array.
                     Double[] candProb = model.calculateCandidateProbability(n, corpus, ngramArr, languageModel, t,
                             plaintext_one, plaintext_two, vocabSize);
+//
+//                    if (candProb[0] == 0.0 || candProb[1] == 0.0) {
+//
+//                    }
 
                     temp.add(new Tuple(plaintext_one, plaintext_two, candProb[0], candProb[1]));
 

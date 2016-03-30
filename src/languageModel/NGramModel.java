@@ -27,7 +27,7 @@ public class NGramModel {
      * laplace smoothing gives too much probability to unseen events.
      */
     public Double estimateProbability(Map<String, Integer>[] mapArr, String key, String corpus, int vocabSize) {
-        Double nGramMLE = 0.0000001;
+        Double nGramMLE = 0.0000001 / key.length();
         return nGramMLE;
     }
 
@@ -137,61 +137,61 @@ public class NGramModel {
         if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
                 !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
-            p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
-            p_one_nminus_prob = Math.log(estimateProbability(ngrams, pOne_n_minus_one_gram, corpus, vocabSize));
-            p_two_nminus_prob = Math.log(estimateProbability(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize));
+            p_one_prob = estimateProbability(ngrams, p_one_ngram, corpus, vocabSize);
+            p_two_prob = estimateProbability(ngrams, p_two_ngram, corpus, vocabSize);
+            p_one_nminus_prob = estimateProbability(ngrams, pOne_n_minus_one_gram, corpus, vocabSize);
+            p_two_nminus_prob = estimateProbability(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize);
 //            System.out.println("both not in lm");
         } else if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
                 languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
-            p_one_nminus_prob = Math.log(estimateProbability(ngrams, pOne_n_minus_one_gram, corpus, vocabSize));
-            p_two_nminus_prob = Math.log(languageModel.get(pTwo_n_minus_one_gram));
+            p_one_prob = estimateProbability(ngrams, p_one_ngram, corpus, vocabSize);
+            p_one_nminus_prob = estimateProbability(ngrams, pOne_n_minus_one_gram, corpus, vocabSize);
+            p_two_nminus_prob = languageModel.get(pTwo_n_minus_one_gram);
 
             if (languageModel.containsKey(p_two_ngram)) {
-                p_two_prob = Math.log(languageModel.get(p_two_ngram));
+                p_two_prob = languageModel.get(p_two_ngram);
             } else {
-                p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
+                p_two_prob = estimateProbability(ngrams, p_two_ngram, corpus, vocabSize);
             }
 
 //            System.out.println("p1 not in lm");
         } else if (languageModel.containsKey(pOne_n_minus_one_gram) &&
                 !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
-            p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
-            p_two_nminus_prob = Math.log(estimateProbability(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize));
-            p_one_nminus_prob = Math.log(languageModel.get(pOne_n_minus_one_gram));
+            p_two_prob = estimateProbability(ngrams, p_two_ngram, corpus, vocabSize);
+            p_two_nminus_prob = estimateProbability(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize);
+            p_one_nminus_prob = languageModel.get(pOne_n_minus_one_gram);
 
             if (languageModel.containsKey(p_one_ngram)) {
                 p_one_prob = Math.log(languageModel.get(p_one_ngram));
             } else {
-                p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
+                p_one_prob = estimateProbability(ngrams, p_one_ngram, corpus, vocabSize);
             }
 
 //            System.out.println("p2 not in lm");
         } else {
 
-            p_one_nminus_prob = Math.log(languageModel.get(pOne_n_minus_one_gram));
-            p_two_nminus_prob = Math.log(languageModel.get(pTwo_n_minus_one_gram));
+            p_one_nminus_prob = languageModel.get(pOne_n_minus_one_gram);
+            p_two_nminus_prob = languageModel.get(pTwo_n_minus_one_gram);
 
             if (languageModel.containsKey(p_one_ngram)) {
-                p_one_prob = Math.log(languageModel.get(p_one_ngram));
+                p_one_prob = languageModel.get(p_one_ngram);
             } else {
-                p_one_prob = Math.log(estimateProbability(ngrams, p_one_ngram, corpus, vocabSize));
+                p_one_prob = estimateProbability(ngrams, p_one_ngram, corpus, vocabSize);
             }
 
             if (languageModel.containsKey(p_two_ngram)) {
-                p_two_prob = Math.log(languageModel.get(p_two_ngram));
+                p_two_prob = languageModel.get(p_two_ngram);
             } else {
-                p_two_prob = Math.log(estimateProbability(ngrams, p_two_ngram, corpus, vocabSize));
+                p_two_prob = estimateProbability(ngrams, p_two_ngram, corpus, vocabSize);
             }
 
 //            System.out.println("both in lm");
         }
 
-        cand_prob_one = candidate.getProbOne() + p_one_prob - p_one_nminus_prob;
-        cand_prob_two = candidate.getProbTwo() + p_two_prob - p_two_nminus_prob;
+        cand_prob_one = candidate.getProbOne() + Math.log(p_one_prob) - Math.log(p_one_nminus_prob);
+        cand_prob_two = candidate.getProbTwo() + Math.log(p_two_prob) - Math.log(p_two_nminus_prob);
 
         return new Double[]{cand_prob_one, cand_prob_two};
     }
