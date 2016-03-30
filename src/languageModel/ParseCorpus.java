@@ -1,36 +1,19 @@
 package languageModel;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 /**
- * A class that allows a user to select the file they want to parse,
- * via  a GUI. The selected file is then processed concurrently into n-grams
- * which are then stored concurrently into a ConcurrentHashMap.
+ * A class that text file parses a text file, and processes it by
+ * generating n-grams, using the concurrency methods from the class 'Split'.
  *
  * @author Shaquille Momoh
  */
 public class ParseCorpus {
-    /**
-     * chooser allows users to select a file by navigating through
-     * directories
-     */
-    private static JFileChooser chooser = new JFileChooser(System.getProperties().getProperty("user.dir"));
-
-    /**
-     * Read a file into a string.
-     *
-     * @return returns a string containing all text in the file.
-     */
-    public static String readFile(Scanner input) {
-        return input.useDelimiter("\\Z").next();
-    }
 
     /**
      * Converts an file to String.
@@ -61,39 +44,6 @@ public class ParseCorpus {
             }
         }
         return builder.toString();
-    }
-
-    /**
-     * A method to allow user to input the value of n, for generating n-grams,
-     * via  GUI.
-     *
-     * @return n : he value of n, for generating n-grams.
-     */
-    public static Integer getN() {
-        String input = JOptionPane.showInputDialog("Enter N:", "3");
-        Integer n = Integer.parseInt(input);
-        return n;
-    }
-
-
-    /**
-     * Brings up chooser for user to select a file or  a directory to be parsed.
-     *
-     * @return : The file or directory that was chosen.
-     * @throws IOException
-     */
-    public File getCorpus() throws IOException {
-        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        chooser.setDialogTitle("Select a File or a Directory as your Corpus");
-        int retval = chooser.showOpenDialog(null);
-
-        if (retval == JFileChooser.APPROVE_OPTION) {
-            File f = chooser.getSelectedFile();
-            return f;
-        }
-
-        return null;
-
     }
 
     /**
