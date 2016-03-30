@@ -141,7 +141,7 @@ public class NGramModel {
             p_two_prob = estimateProbability(ngrams, p_two_ngram, corpus, vocabSize);
             p_one_nminus_prob = estimateProbability(ngrams, pOne_n_minus_one_gram, corpus, vocabSize);
             p_two_nminus_prob = estimateProbability(ngrams, pTwo_n_minus_one_gram, corpus, vocabSize);
-//            System.out.println("both not in lm");
+
         } else if (!languageModel.containsKey(pOne_n_minus_one_gram) &&
                 languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
@@ -155,7 +155,6 @@ public class NGramModel {
                 p_two_prob = estimateProbability(ngrams, p_two_ngram, corpus, vocabSize);
             }
 
-//            System.out.println("p1 not in lm");
         } else if (languageModel.containsKey(pOne_n_minus_one_gram) &&
                 !languageModel.containsKey(pTwo_n_minus_one_gram)) {
 
@@ -169,7 +168,6 @@ public class NGramModel {
                 p_one_prob = estimateProbability(ngrams, p_one_ngram, corpus, vocabSize);
             }
 
-//            System.out.println("p2 not in lm");
         } else {
 
             p_one_nminus_prob = languageModel.get(pOne_n_minus_one_gram);
@@ -187,7 +185,6 @@ public class NGramModel {
                 p_two_prob = estimateProbability(ngrams, p_two_ngram, corpus, vocabSize);
             }
 
-//            System.out.println("both in lm");
         }
 
         cand_prob_one = candidate.getProbOne() + Math.log(p_one_prob) - Math.log(p_one_nminus_prob);
