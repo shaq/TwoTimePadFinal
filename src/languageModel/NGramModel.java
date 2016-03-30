@@ -4,6 +4,7 @@ import beamSearch.Tuple;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class NGramModel {
 
@@ -29,6 +30,102 @@ public class NGramModel {
     public Double estimateProbability(Map<String, Integer>[] mapArr, String key, String corpus, int vocabSize) {
         Double nGramMLE = 0.0000001 / key.length();
         return nGramMLE;
+    }
+
+    public Double getD (Map<String, Integer> ngrams) {
+
+        int n1 = 0;
+        int n2 = 0;
+
+
+        Set<Map.Entry<String, Integer>> entries = ngrams.entrySet();
+
+        for (Map.Entry<String, Integer> entry : entries) {
+            Integer count = entry.getValue();
+            if (count == 1) {
+                n1++;
+            } else if (count == 2) {
+                n2++;
+            }
+        }
+
+        System.out.println("n1 = " + n1 + " , n2 = " + n2);
+
+        double n_1 = (double)n1;
+        double n_2 = (double)n2;
+
+        Double D = n_1 / (n_1 + (2*n_2));
+        System.out.println("D = " + D);
+
+        return D;
+    }
+
+    public Double knSmoothing (Map<String, Integer>[] mapArr, Map<String, Integer> ngrams, String key, Double D) {
+
+        int keyLength = key.length();
+        int keyCount;
+        int nMinusCount;
+        int mapIndex = keyLength - 1;
+        Double knSmoothingEstimate = 0.0;
+
+        int precedeCount = 0;
+
+        if(keyLength <= 1){
+
+            Map<String, Integer> bigrams = mapArr[1];
+            Set<Map.Entry<String, Integer>> bigramSet = bigrams.entrySet();
+
+            for(Map.Entry<String, Integer> entry : bigramSet) {
+                String bigram = entry.getKey();
+                if(bigram.endsWith(key)) {
+                    precedeCount++;
+                }
+            }
+
+            knSmoothingEstimate = ((double)precedeCount / (double)bigrams.size());
+
+        } else {
+
+            // Number of different n-grams in the corpus that can follow the (n-1)-gram ().
+            int followCount = 0;
+
+            String nMinusGram = key.substring(0, mapIndex);
+
+            if(ngrams.containsKey(key)) {
+                keyCount = ngrams.get(key);
+            } else {
+                keyCount = 0;
+            }
+
+            if(ngrams.containsKey(nMinusGram)) {
+                nMinusCount = ngrams.get(nMinusGram);
+            } else {
+                nMinusCount = 0;
+            }
+
+            // The first term is kneser-ney.
+            double discountedNormalizedCount = (Math.max((double)keyCount - D, 0f) / (double)nMinusCount);
+
+            // Entry set of all n-grams with the same length as the 'key'.
+            Set<Map.Entry<String, Integer>> klNGramsSet = ngrams.entrySet();
+
+            for (Map.Entry<String, Integer> entry : klNGramsSet) {
+                String ngram = entry.getKey();
+                if (ngram.startsWith(nMinusGram)) {
+                    followCount++;
+                }
+            }
+
+            double lambda = ((D / (double)nMinusCount) * (double)followCount);
+            String lowerOrderNGram = key.substring(keyLength - (keyLength - 1), keyLength);
+
+            double lowerOrderProbability = knSmoothing(mapArr, ngrams, lowerOrderNGram, D);
+            knSmoothingEstimate = discountedNormalizedCount + (lambda * lowerOrderProbability);
+
+        }
+
+        return knSmoothingEstimate;
+
     }
 
     /**
